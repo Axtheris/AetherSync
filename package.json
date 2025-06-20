@@ -23,6 +23,7 @@
   ],
   "dependencies": {
     "ansi-escapes": "^7.0.0",
+    "axios": "^1.10.0",
     "buffer-from": "^1.1.2"
   }
 }
