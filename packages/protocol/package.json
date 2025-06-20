@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "protobufjs": "^7.2.4",
-    "bonjour-service": "^1.2.1"
+    "bonjour-service": "^1.2.1",
+    "node-webrtc": "^0.4.7"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
