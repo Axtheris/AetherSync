@@ -1,5 +1,3 @@
-Here is a fully fleshed-out and cleanly formatted version of your AetherSync LICENSE in Markdown, with each section expanded for clarity and professionalism:
-
 ---
 
 # AetherSync — LICENSE
