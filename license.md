@@ -1,181 +1,160 @@
-AetherSync — LICENSE
-====================
+Here is a fully fleshed-out and cleanly formatted version of your AetherSync LICENSE in Markdown, with each section expanded for clarity and professionalism:
 
-Copyright © 2025 KM (@Axtheris)
-Repository https://github.com/Axtheris/AetherSync
+---
 
-This work is licensed under the Creative Commons
-Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).
+# AetherSync — LICENSE
 
-You are free to:
-• **Share** — copy and redistribute the material in any medium or format
-• **Adapt** — remix, transform, and build upon the material
+**Copyright © 2025 KM
+GitHub:** [@Axtheris](https://github.com/Axtheris)
+**Repository:** [github.com/Axtheris/AetherSync](https://github.com/Axtheris/AetherSync)
 
-Under the following terms:
-• **Attribution** — You must give appropriate credit, provide a link to this
-  repository, and indicate if changes were made.
-• **NonCommercial** — You may not use the material for commercial purposes.
-• **No additional restrictions** — You may not apply legal terms or
-  technological measures that legally restrict others from doing anything
-  the license permits.
+---
 
-A human-readable summary is available at
-<https://creativecommons.org/licenses/by-nc/4.0/>.
-The full legal code follows unmodified.
+## 🧾 License Overview
 
-------------------------------------------------------------------------
-Creative Commons Attribution-NonCommercial 4.0 International Public License
-========================================================================
+AetherSync is distributed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.
 
-By exercising the Licensed Rights (defined below), You accept and agree to be
-bound by the terms and conditions of this Creative Commons Attribution-
-NonCommercial 4.0 International Public License (“Public License”). To the
-extent this Public License may be interpreted as a contract, You are granted
-the Licensed Rights in consideration of Your acceptance of these terms and
-conditions, and the Licensor grants You such rights in consideration of
-benefits the Licensor receives from making the Licensed Material available
-under these terms and conditions.
+This means you are welcome to use, modify, and share the project, but **not for commercial purposes**. Proper credit must be given, and any derivative works must clearly acknowledge the original.
 
-### Section 1 – Definitions
+---
 
-1.  **Adapted Material** means material subject to Copyright and Similar Rights
-    that is derived from or based upon the Licensed Material and in which the
-    Licensed Material is translated, altered, arranged, transformed, or
-    otherwise modified in a manner requiring permission under the Copyright and
-    Similar Rights held by the Licensor. For purposes of this Public License,
-    where the Licensed Material is a musical work, performance, or sound
-    recording, Adapted Material is always produced where the Licensed Material
-    is synched in timed relation with a moving image.
-2.  **Adapter’s License** means the license You apply to Your Adapted Material
-    in accordance with the terms and conditions of this Public License.
-3.  **BY-NC Compatible License** means a license listed by Creative Commons as
-    compatible with this Public License at
-    <https://creativecommons.org/share-your-work/licensing-considerations/compatible-licenses>
-    or as otherwise approved by Creative Commons.
-4.  **Copyright and Similar Rights** means copyright and/or similar rights
-    closely related to copyright including, without limitation, performance,
-    broadcast, sound recording, and Sui Generis Database Rights, without regard
-    to how the rights are labeled or categorized. For purposes of this Public
-    License, the rights specified in Section 2(b)(1)-(2) are not Copyright and
-    Similar Rights.
-5.  **Effective Technological Measures** means those measures that, in the
-    absence of proper authority, may not be circumvented under laws fulfilling
-    obligations under Article 11 of the WIPO Copyright Treaty adopted on
-    December 20, 1996, and/or similar international agreements.
-6.  **Exceptions and Limitations** means fair use, fair dealing, and/or any
-    other exception or limitation to Copyright and Similar Rights that applies
-    to Your use of the Licensed Material.
-7.  **License Elements** means the license attributes listed in the name of a
-    Creative Commons Public License. The License Elements of this Public
-    License are Attribution and NonCommercial.
-8.  **Licensed Material** means the artistic or literary work, database, or
-    other material to which the Licensor applied this Public License.
-9.  **Licensed Rights** means the rights granted to You subject to the terms
-    and conditions of this Public License, which are limited to all Copyright
-    and Similar Rights that apply to Your use of the Licensed Material and that
-    the Licensor has authority to license.
-10. **Licensor** means the individual(s) or entity(ies) granting rights under
-    this Public License.
-11. **NonCommercial** means not primarily intended for or directed toward
-    commercial advantage or monetary compensation. For purposes of this Public
-    License, the exchange of the Licensed Material for other material subject
-    to Copyright and Similar Rights by digital file-sharing or similar means is
-    NonCommercial provided there is no payment of monetary compensation in
-    connection with the exchange.
-12. **Share** means to provide material to the public by any means or process
-    that requires permission under the Licensed Rights, such as reproduction,
-    public display, public performance, distribution, dissemination,
-    communication, or importation, and to make material available to the
-    public including in ways that members of the public may access the
-    material from a place and at a time individually chosen by them.
-13. **Sui Generis Database Rights** means rights other than copyright
-    resulting from Directive 96/9/EC of the European Parliament and of the
-    Council of 11 March 1996 on the legal protection of databases, as amended
-    and/or succeeded, as well as other essentially equivalent rights anywhere
-    in the world.
-14. **You** means the individual or entity exercising the Licensed Rights
-    under this Public License. **Your** has a corresponding meaning.
+## ✅ You Are Free To
 
-### Section 2 – Scope.
+Under the CC BY-NC 4.0 license, you are permitted to:
 
-a.  **License grant**.
-    1.  Subject to the terms and conditions of this Public License, the Licensor hereby grants You a worldwide, royalty-free, non-sublicensable, non-exclusive, irrevocable license to exercise the Licensed Rights in the Licensed Material to:
-        A.  reproduce and Share the Licensed Material, in whole or in part, for NonCommercial purposes only; and
-        B.  produce, reproduce, and Share Adapted Material for NonCommercial purposes only.
-    2.  **Exceptions and Limitations**. For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply, and You do not need to comply with its terms and conditions.
-    3.  **Term**. The term of this Public License is specified in Section 6(a).
-    4.  **Media and formats; technical modifications allowed**. The Licensor authorizes You to exercise the Licensed Rights in all media and formats whether now known or hereafter created, and to make technical modifications necessary to do so. The Licensor waives and/or agrees not to assert any right or authority to forbid You from making technical modifications necessary to exercise the Licensed Rights, including technical modifications necessary to circumvent Effective Technological Measures. For purposes of this Public License, simply making modifications authorized by this Section 2(a)(4) never produces Adapted Material.
-    5.  **Downstream recipients**.
-        A.  **Offer from the Licensor – Licensed Material**. Every recipient of the Licensed Material automatically receives an offer from the Licensor to exercise the Licensed Rights under the terms and conditions of this Public License.
-        B.  **No downstream restrictions**. You may not offer or impose any additional or different terms or conditions on, or apply any Effective Technological Measures to, the Licensed Material if doing so restricts exercise of the Licensed Rights by any recipient of the Licensed Material.
-    6.  **No endorsement**. Nothing in this Public License constitutes or may be construed as permission to assert or imply that You are, or that Your use of the Licensed Material is, connected with, or sponsored, endorsed, or granted official status by, the Licensor or others designated to receive attribution as provided in Section 3(a)(1)(A)(i).
+* **Share** — Copy and redistribute the material in any medium or format.
+* **Adapt** — Remix, transform, and build upon the material.
 
-b.  **Other rights**.
-    1.  Moral rights, such as the right of integrity, are not licensed under this Public License, nor are publicity, privacy, and/or other similar personality rights; however, to the extent possible, the Licensor waives and/or agrees not to assert any such rights held by the Licensor to the limited extent necessary to allow You to exercise the Licensed Rights, but not otherwise.
-    2.  Patent and trademark rights are not licensed under this Public License.
-    3.  To the extent possible, the Licensor waives any right to collect royalties from You for the exercise of the Licensed Rights, whether directly or through a collecting society under any voluntary or waivable statutory or compulsory licensing scheme. In all other cases the Licensor expressly reserves any right to collect such royalties, including when the Licensed Material is used other than for NonCommercial purposes.
+These freedoms are irrevocable as long as you follow the license terms.
 
-### Section 3 – License Conditions.
+---
 
-Your exercise of the Licensed Rights is expressly made subject to the following conditions.
+## 📌 Under the Following Terms
 
-a.  **Attribution**.
-    1.  If You Share the Licensed Material (including in modified form), You must:
-        A.  retain the following if it is supplied by the Licensor with the Licensed Material:
-            i.  identification of the creator(s) of the Licensed Material and any others designated to receive attribution, in any reasonable manner requested by the Licensor (including by pseudonym if designated);
-            ii. a copyright notice;
-            iii.a notice that refers to this Public License;
-            iv. a notice that refers to the disclaimer of warranties;
-            v.  a URI or hyperlink to the Licensed Material to the extent reasonably practicable;
-        B.  indicate if You modified the Licensed Material and retain an indication of any previous modifications; and
-        C.  indicate the Licensed Material is licensed under this Public License, and include the text of, or the URI or hyperlink to, this Public License.
-        For purposes of this Section 3(a)(1), You may satisfy the conditions in (A) through (C) in any reasonable manner based on the medium, means, and context in which You Share the Licensed Material. For example, it may be reasonable to satisfy the conditions by providing a URI or hyperlink to a resource that includes the required information.
-    2.  If requested by the Licensor, You must remove any of the information required by Section 3(a)(1)(A) to the extent reasonably practicable.
-    3.  If You Share Adapted Material You produce, the Adapter's License You apply must not prevent recipients of the Adapted Material from complying with this Public License.
+### 1. **Attribution**
 
-b.  **NonCommercial**.
-    You may not exercise the Licensed Rights in a manner that is primarily intended for or directed toward commercial advantage or monetary compensation.
-    1.  The exchange of the Licensed Material for other material subject to Copyright and Similar Rights by digital file-sharing or similar means is NonCommercial provided there is no payment of monetary compensation in connection with the exchange.
-    2.  This Section 3(b) does not apply to material that is obtained by You subject to a BY-NC Compatible License.
+You must give **appropriate credit**, which includes:
 
-### Section 4 – Sui Generis Database Rights.
+* Mentioning the original author: **KM (@Axtheris)**
+* Linking to the source: [github.com/Axtheris/AetherSync](https://github.com/Axtheris/AetherSync)
+* Indicating if changes were made
+* Doing so in a reasonable way without implying endorsement
 
-Where the Licensed Rights include Sui Generis Database Rights that apply to Your use of the Licensed Material:
+### 2. **NonCommercial**
 
-a.  for the avoidance of doubt, Section 2(a)(1) grants You the right to extract, reuse, reproduce, and Share all or a substantial portion of the contents of the database for NonCommercial purposes only;
-b.  if You include all or a substantial portion of the database contents in a database in which You have Sui Generis Database Rights, then the database in which You have Sui Generis Database Rights (but not its individual contents) is Adapted Material; and
-c.  You must comply with the conditions in Section 3(a) if You Share all or a substantial portion of the contents of the database.
+You may **not** use this work:
 
-For the avoidance of doubt, this Section 4 supplements and does not replace Your obligations under this Public License where the Licensed Rights include other Copyright and Similar Rights.
+* To make money
+* For commercial products, services, or monetized content
+* In corporate environments unless internally and non-commercially
 
-### Section 5 – Disclaimer of Warranties and Limitation of Liability.
+### 3. **No Additional Restrictions**
 
-a.  **Unless otherwise separately undertaken by the Licensor, to the extent possible, the Licensor offers the Licensed Material as-is and as-available, and makes no representations or warranties of any kind concerning the Licensed Material, whether express, implied, statutory, or other. This includes, without limitation, warranties of title, merchantability, fitness for a particular purpose, non-infringement, absence of latent or other defects, accuracy, or the presence or absence of errors, whether or not known or discoverable. Where disclaimers of warranties are not allowed in full or in part, this disclaimer may not apply to You.**
-b.  **To the extent possible, in no event will the Licensor be liable to You on any legal theory (including, without limitation, negligence) or otherwise for any direct, special, indirect, incidental, consequential, punitive, exemplary, or other losses, costs, expenses, or damages arising out of this Public License or use of the Licensed Material, even if the Licensor has been advised of the possibility of such losses, costs, expenses, or damages. Where a limitation of liability is not allowed in full or in part, this limitation may not apply to You.**
-c.  The disclaimer of warranties and limitation of liability provided above shall be interpreted in a manner that, to the extent possible, most closely approximates an absolute disclaimer and waiver of all liability.
+You may **not**:
 
-### Section 6 – Term and Termination.
+* Apply legal terms or technological measures (such as DRM) that legally restrict others from doing anything the license permits
 
-a.  This Public License applies for the term of the Copyright and Similar Rights licensed here. However, if You fail to comply with this Public License, then Your rights under this Public License terminate automatically.
+---
 
-b.  Where Your right to use the Licensed Material has terminated under Section 6(a), it reinstates:
-    1.  automatically as of the date the violation is cured, provided it is cured within 30 days of Your discovery of the violation; or
-    2.  on express reinstatement by the Licensor.
-    For the avoidance of doubt, this Section 6(b) does not affect any right the Licensor may have to seek remedies for Your violations of this Public License.
+## 📖 Learn More
 
-c.  For the avoidance of doubt, the Licensor may also offer the Licensed Material under separate terms or conditions or stop distributing the Licensed Material at any time; however, doing so will not terminate this Public License.
+* Human-readable summary:
+  👉 [creativecommons.org/licenses/by-nc/4.0](https://creativecommons.org/licenses/by-nc/4.0)
+* Full legal text (included below):
+  🧾 Creative Commons Attribution-NonCommercial 4.0 International Public License
 
-d.  Sections 1, 5, 6, 7, and 8 survive termination of this Public License.
+---
 
-### Section 7 – Other Terms and Conditions.
+# 📚 Full License Text
 
-a.  The Licensor shall not be bound by any additional or different terms or conditions communicated by You unless expressly agreed.
-b.  Any arrangements, understandings, or agreements regarding the Licensed Material not stated herein are separate from and independent of the terms and conditions of this Public License.
+> The following is the complete, unmodified legal text of the Creative Commons Attribution-NonCommercial 4.0 International Public License. This governs your use of the AetherSync software.
 
-### Section 8 – Interpretation.
+---
 
-a.  For the avoidance of doubt, this Public License does not, and shall not be interpreted to, reduce, limit, restrict, or impose conditions on any use of the Licensed Material that could lawfully be made without permission under this Public License.
-b.  To the extent possible, if any provision of this Public License is deemed unenforceable, it shall be automatically reformed to the minimum extent necessary to make it enforceable. If the provision cannot be reformed, it shall be severed from this Public License without affecting the enforceability of the remaining terms and conditions.
-c.  No term or condition of this Public License will be waived and no failure to comply consented to unless expressly agreed to by the Licensor.
-d.  Nothing in this Public License constitutes or may be interpreted as a limitation upon, or waiver of, any privileges and immunities that apply to the Licensor or You, including from the legal processes of any jurisdiction or authority.
-```
+## Section 1 – Definitions
+
+This section defines terms like:
+
+* **Adapted Material**: Derivative works, like forks, remixes, or translations.
+* **Licensed Rights**: All copyright and related rights granted under this license.
+* **NonCommercial**: Not for profit or commercial use.
+* **Share**: Making the material available to the public.
+* See full text above for all definitions.
+
+---
+
+## Section 2 – Scope of the License
+
+This section lays out what is allowed under the license:
+
+* **You are granted** a worldwide, royalty-free, non-exclusive license to:
+
+  * Reproduce and share the original or adapted material
+  * Do so only for non-commercial purposes
+* **No additional restrictions** may be added by you
+* **Term**: The license is granted for the duration of copyright
+* **Format flexibility**: The material can be used in any format, current or future
+* **No endorsement** is implied by the Licensor
+
+---
+
+## Section 3 – License Conditions
+
+### a. Attribution
+
+You must:
+
+* Keep all attributions provided by the Licensor
+* Indicate changes, if made
+* Include a link or full text of the license
+
+### b. NonCommercial
+
+Your use must **not** be for commercial gain. Swapping files via file-sharing is okay **only if** there’s no exchange of money.
+
+---
+
+## Section 4 – Database Rights
+
+If AetherSync or its data structures are covered under database rights:
+
+* You can extract and share the contents **non-commercially**
+* If you remix the database, the **structure** is new material, but **individual contents** still require attribution
+
+---
+
+## Section 5 – Disclaimers
+
+> AetherSync is provided “as-is.” No guarantees or warranties are made.
+
+* The Licensor is not liable for damages, losses, or issues from using the software
+* Use at your own risk
+
+---
+
+## Section 6 – Termination
+
+If you violate the license:
+
+* Your rights **automatically terminate**
+* They can be reinstated if the violation is corrected within 30 days
+* The Licensor may stop offering the material, but existing rights remain valid
+
+---
+
+## Section 7 – Other Conditions
+
+* This license does not bind the Licensor to any extra terms unless explicitly stated
+* Side agreements outside this license are your responsibility
+
+---
+
+## Section 8 – Interpretation
+
+* This license does **not limit any rights** you have under the law
+* If any part of the license is found invalid, the rest still applies
+* No waiver of terms is valid unless written and agreed by the Licensor
+
+---
+
+**End of License**
