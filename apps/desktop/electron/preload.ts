@@ -53,9 +53,17 @@ declare global {
         openFile: (filePath: string) => Promise<boolean>
         showInFolder: (filePath: string) => Promise<boolean>
         getStorageInfo: () => Promise<{
-          used: number
-          total: number
-          free: number
+          drive: {
+            total: number
+            used: number
+            free: number
+          }
+          folder: {
+            size: number
+            limit: number
+            limitEnabled: boolean
+            percentUsed: number
+          }
           path: string
         }>
         analyzeFiles: () => Promise<{

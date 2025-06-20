@@ -10,6 +10,7 @@ import require$$3$2 from "crypto";
 import require$$4 from "assert";
 import require$$5 from "events";
 import require$$1 from "os";
+import { promisify } from "node:util";
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
@@ -14854,7 +14855,10 @@ const store = new Store({
     autoAcceptTransfers: false,
     theme: "light",
     windowBounds: { width: 1200, height: 800 },
-    deviceName: require$1("os").hostname() || "Desktop"
+    deviceName: require$1("os").hostname() || "Desktop",
+    folderSizeLimit: 10 * 1024 * 1024 * 1024,
+    // 10GB default limit
+    enableFolderSizeLimit: false
   }
 });
 let win = null;
@@ -14958,40 +14962,101 @@ ipcMain$1.handle("fs:show-in-folder", async (_, filePath) => {
     return false;
   }
 });
+const getDiskUsage = async (dirPath) => {
+  try {
+    if (fs$3.promises.statfs) {
+      try {
+        const stats = await fs$3.promises.statfs(dirPath);
+        const total = stats.blocks * stats.frsize;
+        const free = stats.bavail * stats.frsize;
+        const used = total - free;
+        return { total, free, used };
+      } catch {
+      }
+    }
+    {
+      const driveLetter = path$6.parse(dirPath).root;
+      if (process.platform === "win32") {
+        const { exec } = require$1("child_process");
+        const execPromise = promisify(exec);
+        try {
+          const { stdout } = await execPromise(`wmic logicaldisk where caption="${driveLetter}" get size,freespace /value`);
+          const lines = stdout.split("\n").filter((line) => line.includes("="));
+          let total = 0, free = 0;
+          for (const line of lines) {
+            if (line.startsWith("Size=")) {
+              total = parseInt(line.split("=")[1]) || 0;
+            } else if (line.startsWith("FreeSpace=")) {
+              free = parseInt(line.split("=")[1]) || 0;
+            }
+          }
+          return { total, free, used: total - free };
+        } catch {
+          return { total: 100 * 1024 * 1024 * 1024, free: 50 * 1024 * 1024 * 1024, used: 50 * 1024 * 1024 * 1024 };
+        }
+      }
+      return { total: 100 * 1024 * 1024 * 1024, free: 50 * 1024 * 1024 * 1024, used: 50 * 1024 * 1024 * 1024 };
+    }
+  } catch (error2) {
+    console.error("Failed to get disk usage:", error2);
+    return { total: 100 * 1024 * 1024 * 1024, free: 50 * 1024 * 1024 * 1024, used: 50 * 1024 * 1024 * 1024 };
+  }
+};
+const getDirectorySize = async (dirPath) => {
+  let totalSize = 0;
+  try {
+    const items2 = await fs$3.promises.readdir(dirPath, { withFileTypes: true });
+    for (const item of items2) {
+      const itemPath = path$6.join(dirPath, item.name);
+      if (item.isDirectory()) {
+        totalSize += await getDirectorySize(itemPath);
+      } else {
+        try {
+          const stat = await fs$3.promises.stat(itemPath);
+          totalSize += stat.size;
+        } catch {
+        }
+      }
+    }
+  } catch (error2) {
+  }
+  return totalSize;
+};
 ipcMain$1.handle("fs:get-storage-info", async () => {
   try {
     const downloadPath = store.get("downloadPath");
-    const getDirectorySize = async (dirPath) => {
-      let totalSize = 0;
-      try {
-        const items2 = await fs$3.promises.readdir(dirPath, { withFileTypes: true });
-        for (const item of items2) {
-          const itemPath = path$6.join(dirPath, item.name);
-          if (item.isDirectory()) {
-            totalSize += await getDirectorySize(itemPath);
-          } else {
-            const stat = await fs$3.promises.stat(itemPath);
-            totalSize += stat.size;
-          }
-        }
-      } catch (error2) {
-      }
-      return totalSize;
-    };
-    const usedSpace = await getDirectorySize(downloadPath);
-    const totalSpace = 100 * 1024 * 1024 * 1024;
+    const folderSizeLimit = store.get("folderSizeLimit");
+    const enableFolderSizeLimit = store.get("enableFolderSizeLimit");
+    const diskUsage = await getDiskUsage(downloadPath);
+    const folderSize = await getDirectorySize(downloadPath);
     return {
-      used: usedSpace,
-      total: totalSpace,
-      free: totalSpace - usedSpace,
+      drive: {
+        total: diskUsage.total,
+        used: diskUsage.used,
+        free: diskUsage.free
+      },
+      folder: {
+        size: folderSize,
+        limit: folderSizeLimit,
+        limitEnabled: enableFolderSizeLimit,
+        percentUsed: enableFolderSizeLimit ? folderSize / folderSizeLimit * 100 : 0
+      },
       path: downloadPath
     };
   } catch (error2) {
     console.error("Failed to get storage info:", error2);
     return {
-      used: 0,
-      total: 0,
-      free: 0,
+      drive: {
+        total: 0,
+        used: 0,
+        free: 0
+      },
+      folder: {
+        size: 0,
+        limit: store.get("folderSizeLimit"),
+        limitEnabled: store.get("enableFolderSizeLimit"),
+        percentUsed: 0
+      },
       path: store.get("downloadPath")
     };
   }

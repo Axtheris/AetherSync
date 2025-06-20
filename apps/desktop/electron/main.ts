@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import fs from 'node:fs'
 import Store from 'electron-store'
+import { promisify } from 'node:util'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -33,6 +34,8 @@ const store = new Store({
     theme: 'light',
     windowBounds: { width: 1200, height: 800 },
     deviceName: require('os').hostname() || 'Desktop',
+    folderSizeLimit: 10 * 1024 * 1024 * 1024, // 10GB default limit
+    enableFolderSizeLimit: false,
   }
 })
 
@@ -169,49 +172,128 @@ ipcMain.handle('fs:show-in-folder', async (_, filePath: string) => {
   }
 })
 
+// Get real disk usage information
+const getDiskUsage = async (dirPath: string) => {
+  try {
+    // Get actual drive stats using statvfs (Unix) or equivalent
+    if (fs.promises.statfs) {
+      try {
+        const stats = await fs.promises.statfs(dirPath)
+        const total = (stats as any).blocks * (stats as any).frsize
+        const free = (stats as any).bavail * (stats as any).frsize
+        const used = total - free
+        
+        return { total, free, used }
+      } catch {
+        // Fall through to Windows implementation
+      }
+    }
+    
+    {
+      // Fallback for Windows or systems without statfs
+      // Use approximate calculation based on drive
+      const driveLetter = path.parse(dirPath).root
+      
+      // Try to get disk space using wmic on Windows
+      if (process.platform === 'win32') {
+        const { exec } = require('child_process')
+        const execPromise = promisify(exec)
+        
+        try {
+          const { stdout } = await execPromise(`wmic logicaldisk where caption="${driveLetter}" get size,freespace /value`)
+          const lines: string[] = stdout.split('\n').filter((line: string) => line.includes('='))
+          
+          let total = 0, free = 0
+          for (const line of lines) {
+            if (line.startsWith('Size=')) {
+              total = parseInt(line.split('=')[1]) || 0
+            } else if (line.startsWith('FreeSpace=')) {
+              free = parseInt(line.split('=')[1]) || 0
+            }
+          }
+          
+          return { total, free, used: total - free }
+        } catch {
+          // Fallback to default values
+          return { total: 100 * 1024 * 1024 * 1024, free: 50 * 1024 * 1024 * 1024, used: 50 * 1024 * 1024 * 1024 }
+        }
+      }
+      
+      // Default fallback
+      return { total: 100 * 1024 * 1024 * 1024, free: 50 * 1024 * 1024 * 1024, used: 50 * 1024 * 1024 * 1024 }
+    }
+  } catch (error) {
+    console.error('Failed to get disk usage:', error)
+    return { total: 100 * 1024 * 1024 * 1024, free: 50 * 1024 * 1024 * 1024, used: 50 * 1024 * 1024 * 1024 }
+  }
+}
+
+// Get directory size recursively
+const getDirectorySize = async (dirPath: string): Promise<number> => {
+  let totalSize = 0
+  try {
+    const items = await fs.promises.readdir(dirPath, { withFileTypes: true })
+    
+    for (const item of items) {
+      const itemPath = path.join(dirPath, item.name)
+      if (item.isDirectory()) {
+        totalSize += await getDirectorySize(itemPath)
+      } else {
+        try {
+          const stat = await fs.promises.stat(itemPath)
+          totalSize += stat.size
+        } catch {
+          // Skip files we can't access
+        }
+      }
+    }
+  } catch (error) {
+    // Handle permission errors gracefully
+  }
+  
+  return totalSize
+}
+
 ipcMain.handle('fs:get-storage-info', async () => {
   try {
     const downloadPath = store.get('downloadPath') as string
+    const folderSizeLimit = store.get('folderSizeLimit') as number
+    const enableFolderSizeLimit = store.get('enableFolderSizeLimit') as boolean
     
-    // Get directory size (simplified - in production you'd want a more robust solution)
-    const getDirectorySize = async (dirPath: string): Promise<number> => {
-      let totalSize = 0
-      try {
-        const items = await fs.promises.readdir(dirPath, { withFileTypes: true })
-        
-        for (const item of items) {
-          const itemPath = path.join(dirPath, item.name)
-          if (item.isDirectory()) {
-            totalSize += await getDirectorySize(itemPath)
-          } else {
-            const stat = await fs.promises.stat(itemPath)
-            totalSize += stat.size
-          }
-        }
-      } catch (error) {
-        // Handle permission errors gracefully
-      }
-      
-      return totalSize
-    }
+    // Get actual disk usage
+    const diskUsage = await getDiskUsage(downloadPath)
     
-    const usedSpace = await getDirectorySize(downloadPath)
-    
-    // Mock total space - in production, you'd get this from the actual drive
-    const totalSpace = 100 * 1024 * 1024 * 1024 // 100GB
+    // Get download folder size
+    const folderSize = await getDirectorySize(downloadPath)
     
     return {
-      used: usedSpace,
-      total: totalSpace,
-      free: totalSpace - usedSpace,
+      drive: {
+        total: diskUsage.total,
+        used: diskUsage.used,
+        free: diskUsage.free,
+      },
+      folder: {
+        size: folderSize,
+        limit: folderSizeLimit,
+        limitEnabled: enableFolderSizeLimit,
+        percentUsed: enableFolderSizeLimit ? (folderSize / folderSizeLimit) * 100 : 0,
+      },
       path: downloadPath,
     }
   } catch (error) {
     console.error('Failed to get storage info:', error)
     return {
-      used: 0,
-      total: 0,
-      free: 0,
+      drive: {
+        total: 0,
+        used: 0,
+        free: 0,
+      },
+      folder: {
+        size: 0,
+        limit: store.get('folderSizeLimit') as number,
+        limitEnabled: store.get('enableFolderSizeLimit') as boolean,
+        percentUsed: 0,
+      },
       path: store.get('downloadPath'),
     }
   }

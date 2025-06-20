@@ -212,9 +212,9 @@ export default function FileExplorer() {
                   <ExternalLink size={14} />
                 </button>
               </div>
-              <p className="text-xs text-text-secondary mt-1 truncate">
-                {downloadPath || 'No download path set'}
-              </p>
+                             <p className="text-xs text-text-secondary mt-1 truncate overflow-hidden" title={downloadPath || 'No download path set'}>
+                 {downloadPath || 'No download path set'}
+               </p>
             </div>
 
             {/* File Type Summary */}
@@ -253,12 +253,12 @@ export default function FileExplorer() {
                         >
                           {getFileIcon(file.name)}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-text-primary text-sm truncate">{file.name}</h4>
-                          <p className="text-xs text-text-secondary">
-                            {file.size && formatFileSize(file.size)} • {file.modified}
-                          </p>
-                        </div>
+                                                 <div className="flex-1 min-w-0">
+                           <h4 className="font-medium text-text-primary text-sm truncate overflow-hidden" title={file.name}>{file.name}</h4>
+                           <p className="text-xs text-text-secondary">
+                             {file.size && formatFileSize(file.size)} • {file.modified}
+                           </p>
+                         </div>
                       </div>
                       
                       <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -311,14 +311,14 @@ export default function FileExplorer() {
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center space-x-2 flex-1 min-w-0">
                           <div className="text-lg">{getFileIcon(shareLink.fileName)}</div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-text-primary text-sm truncate">
-                              {shareLink.fileName}
-                            </h4>
-                            <p className="text-xs text-text-secondary">
-                              Code: {shareLink.shareCode}
-                            </p>
-                          </div>
+                                                     <div className="flex-1 min-w-0">
+                             <h4 className="font-medium text-text-primary text-sm truncate overflow-hidden" title={shareLink.fileName}>
+                               {shareLink.fileName}
+                             </h4>
+                             <p className="text-xs text-text-secondary">
+                               Code: {shareLink.shareCode}
+                             </p>
+                           </div>
                         </div>
                         <button
                           onClick={() => handleDeleteShareLink(shareLink.id)}
@@ -360,12 +360,12 @@ export default function FileExplorer() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2 flex-1 min-w-0">
                           <div className="text-lg">{getFileIcon(shareLink.fileName)}</div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-text-primary text-sm truncate">
-                              {shareLink.fileName}
-                            </h4>
-                            <p className="text-xs text-text-secondary">Expired</p>
-                          </div>
+                                                     <div className="flex-1 min-w-0">
+                             <h4 className="font-medium text-text-primary text-sm truncate overflow-hidden" title={shareLink.fileName}>
+                               {shareLink.fileName}
+                             </h4>
+                             <p className="text-xs text-text-secondary">Expired</p>
+                           </div>
                         </div>
                         <button
                           onClick={() => handleDeleteShareLink(shareLink.id)}

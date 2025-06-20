@@ -250,8 +250,8 @@ const MainContent: React.FC = () => {
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
                       <div className="text-2xl">{getFileIcon(transfer.name)}</div>
-                      <div>
-                        <h4 className="font-medium text-text-primary">{transfer.name}</h4>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-medium text-text-primary truncate" title={transfer.name}>{transfer.name}</h4>
                         <p className="text-sm text-text-secondary">{formatFileSize(transfer.size)}</p>
                       </div>
                     </div>
@@ -318,8 +318,8 @@ const MainContent: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="text-2xl">{getFileIcon(transfer.name)}</div>
-                      <div>
-                        <h4 className="font-medium text-text-primary">{transfer.name}</h4>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-medium text-text-primary truncate" title={transfer.name}>{transfer.name}</h4>
                         <p className="text-sm text-text-secondary">
                           {formatFileSize(transfer.size)} • Completed {transfer.completedAt?.toLocaleTimeString()}
                         </p>

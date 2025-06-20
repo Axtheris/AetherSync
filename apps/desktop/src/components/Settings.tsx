@@ -81,7 +81,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
                   Download Folder
                 </label>
                 <div className="flex items-center space-x-2">
-                  <div className="flex-1 px-3 py-2 bg-surface-50 border border-surface-300 rounded-lg text-sm text-text-primary truncate">
+                  <div className="flex-1 px-3 py-2 bg-surface-50 border border-surface-300 rounded-lg text-sm text-text-primary truncate overflow-hidden min-w-0" title={downloadPath || 'No folder selected'}>
                     {downloadPath || 'No folder selected'}
                   </div>
                   <button

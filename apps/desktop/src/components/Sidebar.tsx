@@ -79,9 +79,9 @@ export default function Sidebar() {
               <Folder size={20} className="text-white" />
             </div>
           </div>
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-text-primary mb-1">Download Location</h3>
-            <p className="text-sm text-text-secondary mb-3 truncate">
+            <p className="text-sm text-text-secondary mb-3 truncate overflow-hidden" title={downloadPath || 'No path selected'}>
               {downloadPath || 'No path selected'}
             </p>
             <button 

@@ -29,9 +29,17 @@ export interface ShareLink {
 }
 
 export interface StorageInfo {
-  used: number
-  total: number
-  free: number
+  drive: {
+    total: number
+    used: number
+    free: number
+  }
+  folder: {
+    size: number
+    limit: number
+    limitEnabled: boolean
+    percentUsed: number
+  }
   path: string
 }
 
@@ -65,6 +73,8 @@ interface TransferStore {
   updateStorageInfo: () => Promise<void>
   updateFileAnalysis: () => Promise<void>
   setDownloadPath: (path: string) => Promise<void>
+  setFolderSizeLimit: (limit: number) => Promise<void>
+  setFolderSizeLimitEnabled: (enabled: boolean) => Promise<void>
   
   initialize: () => Promise<void>
 }
@@ -205,6 +215,30 @@ export const useTransferStore = create<TransferStore>()(
           get().updateFileAnalysis()
         } catch (error) {
           console.error('Failed to set download path:', error)
+        }
+      }
+    },
+
+    setFolderSizeLimit: async (limit: number) => {
+      if (window.electronAPI) {
+        try {
+          await window.electronAPI.store.set('folderSizeLimit', limit)
+          // Refresh storage info to update the limit
+          get().updateStorageInfo()
+        } catch (error) {
+          console.error('Failed to set folder size limit:', error)
+        }
+      }
+    },
+
+    setFolderSizeLimitEnabled: async (enabled: boolean) => {
+      if (window.electronAPI) {
+        try {
+          await window.electronAPI.store.set('enableFolderSizeLimit', enabled)
+          // Refresh storage info to update the enabled state
+          get().updateStorageInfo()
+        } catch (error) {
+          console.error('Failed to set folder size limit enabled state:', error)
         }
       }
     },
