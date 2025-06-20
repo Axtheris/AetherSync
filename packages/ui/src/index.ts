@@ -1,17 +1,20 @@
 // Core components
-export * from './Card';
-export * from './Button';
 export * from './Avatar';
+export * from './card';
+export * from './button';
 
 // Progress and data visualization
 export * from './CircularProgress';
+export * from './code';
 
 // File-related components
 export * from './FileIcon';
 
-// Re-export common types for convenience
-export type { CardProps } from './Card';
-export type { ButtonProps } from './Button';
-export type { AvatarProps, AvatarGroupProps } from './Avatar';
+// Re-export types for convenience
+export type { AvatarProps } from './Avatar';
+export type { AvatarGroupProps } from './Avatar';
+export type { FileIconProps } from './FileIcon';
+export type { FileTransferItemProps } from './FileIcon';
 export type { CircularProgressProps } from './CircularProgress';
-export type { FileIconProps, FileTransferItemProps } from './FileIcon'; 
+export type { CardProps } from './card';
+export type { ButtonProps } from './button'; 

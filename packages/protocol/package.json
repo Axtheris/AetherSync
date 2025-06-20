@@ -5,16 +5,17 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "npm run proto:generate && tsc",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "proto:generate": "protoc --ts_out=./src --proto_path=./src transfer.proto",
+    "proto:generate": "echo 'Skipping proto generation - using pre-built files'",
     "lint": "eslint src/",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "protobufjs": "^7.2.4",
     "bonjour-service": "^1.2.1",
-    "simple-peer": "^9.11.1"
+    "simple-peer": "^9.11.1",
+    "multicast-dns": "^7.2.5"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",

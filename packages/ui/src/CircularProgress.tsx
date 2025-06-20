@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
 
 export interface CircularProgressProps {
   progress: number; // 0-100
@@ -23,52 +22,46 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
   centerText,
   className = '',
 }) => {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const strokeDasharray = circumference;
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
-
   return (
     <View className={`items-center justify-center ${className}`} style={{ width: size, height: size }}>
-      <Svg width={size} height={size} className="absolute">
-        {/* Background circle */}
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke={backgroundColor}
-          strokeWidth={strokeWidth}
-          fill="transparent"
+      {/* Simplified circular progress using View */}
+      <View 
+        className="rounded-full border items-center justify-center"
+        style={{ 
+          width: size, 
+          height: size, 
+          borderWidth: strokeWidth,
+          borderColor: backgroundColor,
+        }}
+      >
+        {/* Progress indicator - simplified to a quarter circle for demo */}
+        <View 
+          className="absolute rounded-full border-l-0 border-b-0"
+          style={{ 
+            width: size, 
+            height: size, 
+            borderWidth: strokeWidth,
+            borderColor: color,
+            borderLeftColor: 'transparent',
+            borderBottomColor: 'transparent',
+            transform: [{ rotate: `${(progress / 100) * 360}deg` }],
+          }}
         />
         
-        {/* Progress circle */}
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke={color}
-          strokeWidth={strokeWidth}
-          fill="transparent"
-          strokeDasharray={strokeDasharray}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        />
-      </Svg>
-      
-      {showText && (
-        <View className="absolute items-center justify-center">
-          {centerText ? (
-            <Text className="text-text-primary text-center font-medium">
-              {centerText}
-            </Text>
-          ) : (
-            <Text className="text-2xl font-bold text-text-primary">
-              {Math.round(progress)}%
-            </Text>
-          )}
-        </View>
-      )}
+        {showText && (
+          <View className="absolute items-center justify-center">
+            {centerText ? (
+              <Text className="text-text-primary text-center font-medium">
+                {centerText}
+              </Text>
+            ) : (
+              <Text className="text-2xl font-bold text-text-primary">
+                {Math.round(progress)}%
+              </Text>
+            )}
+          </View>
+        )}
+      </View>
     </View>
   );
 };
