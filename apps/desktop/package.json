@@ -1,0 +1,83 @@
+{
+  "name": "@aethersync/desktop",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist-electron/main.js",
+  "description": "AetherSync Desktop - Local network file transfer with advanced analytics",
+  "author": "AetherSync Team",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && electron-builder",
+    "build:vite": "tsc && vite build",
+    "preview": "vite preview",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:pack": "electron-builder",
+    "electron:dist": "npm run build:vite && electron-builder",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aethersync/protocol": "*",
+    "@aethersync/ui": "*",
+    "@aethersync/utils": "*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "electron-store": "^8.1.0",
+    "recharts": "^2.8.0",
+    "lucide-react": "^0.294.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0",
+    "framer-motion": "^10.16.0",
+    "zustand": "^4.4.0",
+    "node-webrtc": "^0.4.9"
+  },
+  "devDependencies": {
+    "@aethersync/eslint-config": "*",
+    "@aethersync/typescript-config": "*",
+    "@types/react": "^18.2.64",
+    "@types/react-dom": "^18.2.21",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.6",
+    "electron": "^30.0.1",
+    "electron-builder": "^24.13.3",
+    "vite-plugin-electron": "^0.28.6",
+    "vite-plugin-electron-renderer": "^0.14.5",
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5"
+  },
+  "build": {
+    "appId": "com.aethersync.desktop",
+    "productName": "AetherSync",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "dist-electron",
+      "dist"
+    ],
+    "mac": {
+      "icon": "build/icon.icns",
+      "target": "dmg"
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "target": "nsis"
+    },
+    "linux": {
+      "icon": "build/icon.png",
+      "target": "AppImage"
+    }
+  }
+}
