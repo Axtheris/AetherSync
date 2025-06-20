@@ -1,11 +1,20 @@
+import { useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
 import WindowControls from './components/WindowControls'
 import Sidebar from './components/Sidebar'
 import MainContent from './components/MainContent'
 import FileExplorer from './components/FileExplorer'
+import { useTransferStore } from './stores/transfer-store'
 import './App.css'
 
 function App() {
+  const { initialize } = useTransferStore()
+
+  useEffect(() => {
+    // Initialize the app when it loads
+    initialize()
+  }, [initialize])
+
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-background-from to-background-to">
       {/* Window Controls (macOS style) */}
