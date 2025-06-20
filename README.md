@@ -1,84 +1,229 @@
-# Turborepo starter
+# AetherSync
 
-This Turborepo starter is maintained by the Turborepo core team.
+A local-network file transfer tool that allows iOS/Android (Expo) devices and Windows/macOS/Linux (Electron) computers to discover each other automatically over the same Wi-Fi network and transfer files without needing the cloud, cables, or internet.
 
-## Using this example
+## 🚀 Project Overview
 
-Run the following command:
+AetherSync is built using a modern TypeScript monorepo with Turborepo, featuring:
 
-```sh
-npx create-turbo@latest
-```
+- **Zero-config peer discovery** using mDNS (Bonjour)
+- **Encrypted P2P transfers** via WebRTC DataChannels with HTTP fallback
+- **Cross-platform support** for mobile (iOS/Android/Web) and desktop (Windows/macOS/Linux)
+- **Type-safe protocol** using Protocol Buffers
+- **Modern UI** with TailwindCSS and NativeWind
 
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+## 📁 Project Structure
 
 ```
-cd my-turborepo
-pnpm build
+AetherSync/
+├── apps/
+│   ├── mobile/          # Expo app (iOS/Android/Web)
+│   └── desktop/         # Electron app (Windows/macOS/Linux)
+├── packages/
+│   ├── protocol/        # Protobuf definitions & mDNS helpers
+│   ├── ui/             # Shared UI components
+│   ├── utils/          # Shared utility functions
+│   ├── eslint-config/  # Shared ESLint configuration
+│   └── typescript-config/ # Shared TypeScript configuration
+└── README.md
 ```
 
-### Develop
+## 🛠 Technology Stack
 
-To develop all apps and packages, run the following command:
+### Core Technologies
+- **TypeScript** - Strict type safety across all packages
+- **Turborepo** - Monorepo build system with caching
+- **Protocol Buffers** - Type-safe message serialization
+- **mDNS** - Zero-config peer discovery
 
+### Mobile App (`apps/mobile`)
+- **Expo Router** - File-based routing for React Native
+- **React Native** - Cross-platform mobile development
+- **NativeWind** - TailwindCSS for React Native
+- **Zustand** - Lightweight state management
+- **expo-document-picker** - File selection
+- **expo-file-system** - File operations
+- **react-native-webrtc** - P2P connections
+
+### Desktop App (`apps/desktop`)
+- **Electron** - Cross-platform desktop apps
+- **React + Vite** - Fast development and builds
+- **TailwindCSS** - Utility-first CSS
+- **electron-store** - Persistent settings
+- **node-webrtc** - WebRTC for desktop
+
+## 📋 Current Implementation Status
+
+### ✅ Completed Features
+
+1. **Monorepo Foundation**
+   - Turborepo configuration with optimized build pipeline
+   - Shared TypeScript and ESLint configurations
+   - Proper workspace dependencies
+
+2. **Protocol Package** (`packages/protocol`)
+   - Complete protobuf schema with 6 message types:
+     - `DiscoverPing` / `DiscoverPong` - Device discovery
+     - `FileMeta` - File metadata
+     - `FileChunk` - File data chunks
+     - `Ack` - Transfer acknowledgments
+     - `Error` - Error handling
+   - mDNS service implementation for peer discovery
+   - Protocol utilities (checksum, device ID generation, etc.)
+
+3. **Utilities Package** (`packages/utils`)
+   - File size formatting
+   - MIME type detection
+   - File type categorization
+   - Debounce/throttle utilities
+   - Progress calculation helpers
+
+4. **Mobile App Foundation** (`apps/mobile`)
+   - Expo Router setup with TailwindCSS/NativeWind
+   - Zustand stores for state management:
+     - `PeerStore` - Peer discovery and device management
+     - `TransferStore` - File transfer state and history
+   - Custom hooks:
+     - `usePeerDiscovery()` - mDNS peer discovery
+     - `useFileTransfer()` - File transfer operations
+   - Configured for all required Expo dependencies
+
+### 🚧 Next Steps
+
+1. **Complete Desktop App** (Electron + React)
+2. **Implement WebRTC DataChannels** with HTTP fallback
+3. **Build UI Component Library** (`packages/ui`)
+4. **Add Testing** (Jest + Testing Library + Playwright)
+5. **Set up CI/CD** (GitHub Actions)
+6. **Build & Release Configuration** (EAS Build + electron-builder)
+
+## 🔧 Development Setup
+
+### Prerequisites
+- Node.js 18+
+- npm 10+
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd AetherSync
+
+# Install dependencies
+npm install
+
+# Generate protocol buffers (once implemented)
+npm run generate
+
+# Build all packages
+npm run build
 ```
-cd my-turborepo
-pnpm dev
+
+### Development Commands
+
+```bash
+# Start development mode for all apps
+npm run dev
+
+# Build all packages and apps
+npm run build
+
+# Run linting
+npm run lint
+
+# Type checking
+npm run type-check
+
+# Format code
+npm run format
 ```
 
-### Remote Caching
+### Mobile Development
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+```bash
+cd apps/mobile
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+# Start Expo development server
+npm start
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+# Run on iOS simulator (macOS only)
+npm run ios
 
-```
-cd my-turborepo
-npx turbo login
-```
+# Run on Android emulator
+npm run android
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
+# Run in web browser
+npm run web
 ```
 
-## Useful Links
+## 🎯 Core Features (Planned)
 
-Learn more about the power of Turborepo:
+### Mobile App Screens
+- **`/send`** - Pick files, discover peers, initiate transfers
+- **`/receive`** - Accept incoming transfers, show progress
+- **`/history`** - View transfer history with thumbnails
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+### Desktop App Pages
+- **Home** - Drag & drop files, peer list, quick transfer
+- **Transfers** - Active and completed transfer management
+- **Settings** - Storage directory configuration
+
+### File Transfer Protocol
+1. **Discovery Phase** - mDNS announces device availability
+2. **Connection** - WebRTC peer connection establishment
+3. **Transfer** - Chunked file transfer with progress tracking
+4. **Verification** - SHA-256 checksum validation
+
+## 🔒 Security Features
+
+- **Encrypted transfers** via WebRTC DTLS
+- **Checksum verification** for data integrity
+- **Local network only** - no internet/cloud dependency
+- **Selective file access** on iOS 17+ with PHPicker
+
+## 📱 Platform Support
+
+### Mobile (Expo)
+- ✅ iOS 13+
+- ✅ Android 8+
+- ✅ Web browsers
+
+### Desktop (Electron)
+- ✅ Windows 10+
+- ✅ macOS 10.15+
+- ✅ Linux (Ubuntu 18.04+)
+
+## 🧪 Testing Strategy
+
+- **Unit tests** for utilities and hooks (Jest + Testing Library)
+- **Integration tests** for file transfer simulation
+- **E2E tests** for desktop app (Playwright)
+- **Performance tests** for 50MB+ file transfers
+
+## 📦 Build & Release
+
+### Mobile App
+- **Expo EAS Build** for iOS/Android
+- **Static web export** for hosting
+
+### Desktop App
+- **electron-builder** for Windows/macOS packages
+- **GitHub Releases** for distribution
+
+## 🤝 Contributing
+
+This project follows modern TypeScript best practices with:
+- Strict type checking
+- Prettier code formatting
+- ESLint code quality checks
+- Conventional commit messages
+- Automated testing
+
+## 📄 License
+
+[Add your license here]
+
+---
+
+**AetherSync** - Seamless file sharing across your local network 🚀
