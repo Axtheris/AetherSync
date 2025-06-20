@@ -1,119 +1,59 @@
 {
-  "name": "mobile",
-  "version": "1.0.0",
-  "author": "650 Industries, Inc.",
-  "license": "MIT",
-  "main": "build/index",
-  "types": "build/index.d.ts",
-  "sideEffects": [
-    "rsc/entry.js",
-    "entry-classic.js",
-    "entry.js"
-  ],
-  "files": [
-    "link",
-    "assets",
-    "build",
-    "vendor",
-    "!src",
-    "_ctx-html.js",
-    "_ctx-shared.js",
-    "_ctx.*",
-    "_error.js",
-    "app.plugin.js",
-    "babel.js",
-    "doctor.js",
-    "drawer.d.ts",
-    "drawer.js",
-    "entry-classic.js",
-    "entry.js",
-    "expo-module.config.json",
-    "head.d.ts",
-    "head.js",
-    "html.d.ts",
-    "html.js",
-    "index.d.ts",
-    "ios",
-    "node",
-    "plugin",
-    "rsc",
-    "server.d.ts",
-    "server.js",
-    "stack.d.ts",
-    "stack.js",
-    "tabs.js",
-    "types",
-    "tabs.d.ts",
-    "ui.js",
-    "ui.d.ts",
-    "testing-library.js",
-    "testing-library.d.ts",
-    "_async-server-import.js"
-  ],
-  "bugs": {
-    "url": "https://github.com/expo/expo/issues"
-  },
-  "homepage": "https://docs.expo.dev/routing/introduction/",
+  "name": "@aethersync/mobile",
+  "main": "expo-router/entry",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "build": "bash -c 'if [ -z \"$1\" ]; then expo-module build -p tsconfig.build.json; else expo-module build \"$1\"; fi' --",
-    "clean": "expo-module clean",
-    "lint": "expo-module lint",
-    "test": "expo-module test",
-    "test:rsc": "jest --config jest-rsc.config.js",
-    "test:tsd": "EXPORT_ROUTER_JEST_TSD=true expo-module test",
-    "prepublishOnly": "expo-module prepublishOnly",
-    "expo-module": "expo-module"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "test": "jest --watchAll",
+    "build": "expo export",
+    "build:web": "expo export -p web",
+    "lint": "eslint . --ext .ts,.tsx",
+    "type-check": "tsc --noEmit"
   },
-  "keywords": [
-    "react-native",
-    "expo"
-  ],
-  "peerDependencies": {
-    "@react-navigation/drawer": "^7.3.9",
-    "expo": "*",
-    "expo-constants": "*",
-    "expo-linking": "*",
-    "react-native-reanimated": "*",
-    "react-native-safe-area-context": "*",
-    "react-native-screens": "*"
-  },
-  "peerDependenciesMeta": {
-    "react-native-reanimated": {
-      "optional": true
-    },
-    "@react-navigation/drawer": {
-      "optional": true
-    },
-    "@testing-library/jest-native": {
-      "optional": true
-    }
-  },
-  "devDependencies": {
-    "@react-navigation/drawer": "^7.3.9",
-    "@testing-library/jest-native": "^5.4.2",
-    "@testing-library/react": "^15.0.7",
-    "@testing-library/react-native": "^13.1.0",
-    "@types/semver": "^7.7.0",
-    "immer": "^10.1.1",
-    "react-server-dom-webpack": "~19.0.0",
-    "tsd": "^0.28.1"
+  "jest": {
+    "preset": "jest-expo"
   },
   "dependencies": {
-    "@expo/metro-runtime": "5.0.4",
-    "@expo/server": "^0.6.2",
-    "@radix-ui/react-slot": "1.2.0",
-    "@react-navigation/bottom-tabs": "^7.3.10",
+    "@aethersync/protocol": "*",
+    "@aethersync/ui": "*",
+    "@aethersync/utils": "*",
+    "@expo/vector-icons": "^14.1.0",
     "@react-navigation/native": "^7.1.6",
-    "@react-navigation/native-stack": "^7.3.10",
-    "client-only": "^0.0.1",
-    "invariant": "^2.2.4",
-    "react-fast-compare": "^3.2.2",
-    "react-native-is-edge-to-edge": "^1.1.6",
-    "schema-utils": "^4.0.1",
-    "semver": "~7.6.3",
-    "server-only": "^0.0.1",
-    "shallowequal": "^1.1.0"
+    "expo": "~53.0.12",
+    "expo-document-picker": "~12.2.1",
+    "expo-file-system": "~18.5.3",
+    "expo-font": "~13.3.1",
+    "expo-linking": "~7.1.5",
+    "expo-router": "~5.1.0",
+    "expo-sharing": "~12.2.1",
+    "expo-splash-screen": "~0.30.9",
+    "expo-status-bar": "~2.2.3",
+    "expo-system-ui": "~5.0.9",
+    "expo-web-browser": "~14.2.0",
+    "nativewind": "^4.1.23",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-native": "0.79.4",
+    "react-native-reanimated": "~3.17.4",
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-screens": "~4.11.1",
+    "react-native-web": "~0.20.0",
+    "react-native-webrtc": "^124.0.7",
+    "tailwindcss": "^3.4.0",
+    "zustand": "^5.0.7"
   },
-  "gitHead": "41c654c0318dfcc0d0f3a7a3b23ec498494542df",
-  "private": true
+  "devDependencies": {
+    "@aethersync/eslint-config": "*",
+    "@aethersync/typescript-config": "*",
+    "@babel/core": "^7.25.2",
+    "@types/react": "~19.0.10",
+    "jest": "^29.2.1",
+    "jest-expo": "~53.0.7",
+    "react-test-renderer": "19.0.0",
+    "typescript": "~5.8.3"
+  }
 }
