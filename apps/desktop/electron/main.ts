@@ -17,21 +17,34 @@ try {
   console.warn('Sharp not available for thumbnail generation')
 }
 
-// Install music-metadata for audio metadata extraction
+// Install music-metadata for audio metadata extraction (ES module dynamic import)
 let parseFile: any = null
-try {
-  const musicMetadata: any = require('music-metadata')
-  parseFile = musicMetadata.parseFile
-  console.log('music-metadata library loaded successfully:', typeof musicMetadata, typeof parseFile)
-  
-  // If parseFile is not directly available, try other methods
-  if (!parseFile) {
-    parseFile = musicMetadata.default?.parseFile
-    console.log('Trying default.parseFile:', typeof parseFile)
+
+const loadMusicMetadata = async () => {
+  try {
+    console.log('Attempting to load music-metadata via dynamic import...')
+    const mm: any = await import('music-metadata')
+    parseFile = mm.parseFile
+    console.log('music-metadata loaded successfully via dynamic import:', typeof parseFile)
+  } catch (error) {
+    console.warn('Music-metadata not available for audio metadata extraction:', error)
+    
+    // Fallback: try node-id3 or music-metadata-browser as alternatives
+    try {
+      console.log('Trying fallback music library...')
+      const NodeID3 = require('node-id3')
+      if (NodeID3) {
+        console.log('node-id3 available as fallback')
+        // We'll implement this as a backup if needed
+      }
+    } catch (error2) {
+      console.warn('No audio metadata libraries available')
+    }
   }
-} catch (error) {
-  console.warn('Music-metadata not available for audio metadata extraction:', error)
 }
+
+// Load music-metadata when the module initializes
+loadMusicMetadata()
 
 // Install ffmpeg-static for video thumbnails
 let ffmpegStatic: any
@@ -422,7 +435,9 @@ ipcMain.handle('fs:analyze-files', async () => {
 // Get recent files with thumbnails
 ipcMain.handle('fs:get-recent-files', async (_, limit: number = 20) => {
   try {
+    console.log('=== GET RECENT FILES CALLED ===')
     const downloadPath = store.get('downloadPath') as string
+    console.log('Download path:', downloadPath)
     const recentFiles: Array<{
       id: string
       name: string
@@ -502,6 +517,14 @@ ipcMain.handle('fs:get-recent-files', async (_, limit: number = 20) => {
       }
     }
     
+    console.log('=== RETURNING FILES ===')
+    console.log('Total files with thumbnails:', limitedFiles.filter(f => f.thumbnail).length)
+    console.log('File details:', limitedFiles.map(f => ({ 
+      name: f.name, 
+      hasThumbnail: !!f.thumbnail,
+      thumbnailLength: f.thumbnail?.length 
+    })))
+    
     return limitedFiles
   } catch (error) {
     console.error('Failed to get recent files:', error)
@@ -573,36 +596,61 @@ const extractAudioThumbnail = async (filePath: string): Promise<string | null> =
   try {
     console.log('Attempting to extract audio thumbnail for:', filePath)
     
-    if (!parseFile) {
-      console.warn('music-metadata parseFile function not available')
-      return null
+    // Try music-metadata first
+    if (parseFile) {
+      try {
+        console.log('Using music-metadata to parse file...')
+        const metadata = await parseFile(filePath)
+        console.log('Metadata parsed successfully:', {
+          title: metadata.common.title,
+          artist: metadata.common.artist,
+          hasPicture: !!metadata.common.picture?.length
+        })
+        
+        const picture = metadata.common.picture?.[0]
+        
+        if (picture) {
+          console.log('Found album art:', {
+            format: picture.format,
+            dataSize: picture.data.length
+          })
+          
+          const mimeType = picture.format || 'image/jpeg'
+          const base64Data = picture.data.toString('base64')
+          const dataUrl = `data:${mimeType};base64,${base64Data}`
+          
+          console.log('Generated thumbnail data URL for audio file via music-metadata')
+          return dataUrl
+        } else {
+          console.log('No album art found in audio file')
+        }
+      } catch (error) {
+        console.error('music-metadata failed, trying fallback:', error)
+      }
     }
     
-    console.log('parseFile function is available, parsing file...')
-    const metadata = await parseFile(filePath)
-    console.log('Metadata parsed successfully:', {
-      title: metadata.common.title,
-      artist: metadata.common.artist,
-      hasPicture: !!metadata.common.picture?.length
-    })
-    
-    const picture = metadata.common.picture?.[0]
-    
-    if (picture) {
-      console.log('Found album art:', {
-        format: picture.format,
-        dataSize: picture.data.length
-      })
+    // Fallback to node-id3
+    try {
+      console.log('Trying node-id3 as fallback...')
+      const NodeID3 = require('node-id3')
+      const tags = NodeID3.read(filePath)
       
-      const mimeType = picture.format || 'image/jpeg'
-      const base64Data = picture.data.toString('base64')
-      const dataUrl = `data:${mimeType};base64,${base64Data}`
-      
-      console.log('Generated thumbnail data URL for audio file')
-      return dataUrl
-    } else {
-      console.log('No album art found in audio file')
+      if (tags && tags.image) {
+        console.log('Found album art via node-id3')
+        const imageData = tags.image.imageBuffer
+        const mimeType = tags.image.mime || 'image/jpeg'
+        const base64Data = imageData.toString('base64')
+        const dataUrl = `data:${mimeType};base64,${base64Data}`
+        
+        console.log('Generated thumbnail data URL for audio file via node-id3')
+        return dataUrl
+      } else {
+        console.log('No album art found via node-id3')
+      }
+    } catch (error) {
+      console.error('node-id3 fallback also failed:', error)
     }
+    
   } catch (error) {
     console.error('Failed to extract audio metadata for:', filePath, error)
   }

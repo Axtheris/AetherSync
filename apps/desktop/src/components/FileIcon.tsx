@@ -2,8 +2,8 @@ import React from 'react'
 import { 
   getFileIcon, 
   getFileColor, 
-  getFileExtension, 
-  getFileTypeFromExtension 
+  getFileExtension,
+  getFileTypeFromExtension
 } from '../utils/file-utils'
 
 interface FileIconProps {
@@ -29,18 +29,23 @@ export const FileIcon: React.FC<FileIconProps> = ({
   }
 
   const extension = getFileExtension(fileName).toUpperCase()
-  const fileType = getFileTypeFromExtension(extension.toLowerCase())
   const color = getFileColor(fileName)
   const icon = getFileIcon(fileName)
 
-  // Show thumbnail for images if available
-  if (thumbnail && fileType === 'image') {
+  // Show thumbnail if available (for any file type - images, videos with frames, audio with album art)
+  if (thumbnail) {
+    console.log('FileIcon: Displaying thumbnail for', fileName, 'thumbnail length:', thumbnail.length)
     return (
       <div className={`${sizeClasses[size]} ${className} relative`}>
         <img
           src={thumbnail}
           alt={fileName}
           className="w-full h-full object-cover rounded"
+          onError={(e) => {
+            console.error('Failed to load thumbnail for', fileName)
+            // Hide the image on error and show fallback
+            e.currentTarget.style.display = 'none'
+          }}
         />
         <div className="absolute inset-0 bg-black bg-opacity-20 rounded" />
       </div>

@@ -37,7 +37,8 @@
     "sharp": "^0.33.0",
     "music-metadata": "^10.3.0",
     "fluent-ffmpeg": "^2.1.2",
-    "ffmpeg-static": "^5.2.0"
+    "ffmpeg-static": "^5.2.0",
+    "node-id3": "^0.2.6"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
