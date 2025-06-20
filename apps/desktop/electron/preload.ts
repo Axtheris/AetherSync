@@ -18,6 +18,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     showInFolder: (filePath: string) => ipcRenderer.invoke('fs:show-in-folder', filePath),
     getStorageInfo: () => ipcRenderer.invoke('fs:get-storage-info'),
     analyzeFiles: () => ipcRenderer.invoke('fs:analyze-files'),
+    getRecentFiles: (limit?: number) => ipcRenderer.invoke('fs:get-recent-files', limit),
+    generateThumbnail: (filePath: string) => ipcRenderer.invoke('fs:generate-thumbnail', filePath),
   },
 
   // Window controls
@@ -73,6 +75,17 @@ declare global {
           sound: { count: number; size: number }
           other: { count: number; size: number }
         }>
+        getRecentFiles: (limit?: number) => Promise<Array<{
+          id: string
+          name: string
+          type: 'file'
+          size: number
+          modified: string
+          path: string
+          mimeType: string
+          thumbnail?: string
+        }>>
+        generateThumbnail: (filePath: string) => Promise<string | null>
       }
       window: {
         minimize: () => Promise<void>

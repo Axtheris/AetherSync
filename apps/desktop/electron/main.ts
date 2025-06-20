@@ -9,6 +9,22 @@ import { promisify } from 'node:util'
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+// Install sharp for image thumbnail generation
+let sharp: any
+try {
+  sharp = require('sharp')
+} catch (error) {
+  console.warn('Sharp not available for thumbnail generation')
+}
+
+// Install music-metadata for audio metadata extraction
+let musicMetadata: any
+try {
+  musicMetadata = require('music-metadata')
+} catch (error) {
+  console.warn('Music-metadata not available for audio metadata extraction')
+}
+
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -381,6 +397,102 @@ ipcMain.handle('fs:analyze-files', async () => {
   }
 })
 
+// Get recent files with thumbnails
+ipcMain.handle('fs:get-recent-files', async (_, limit: number = 20) => {
+  try {
+    const downloadPath = store.get('downloadPath') as string
+    const recentFiles: Array<{
+      id: string
+      name: string
+      type: 'file'
+      size: number
+      modified: string
+      path: string
+      mimeType: string
+      thumbnail?: string
+    }> = []
+    
+    const collectFiles = async (dirPath: string) => {
+      try {
+        const items = await fs.promises.readdir(dirPath, { withFileTypes: true })
+        
+        for (const item of items) {
+          const itemPath = path.join(dirPath, item.name)
+          if (item.isDirectory()) {
+            await collectFiles(itemPath)
+          } else {
+            try {
+              const stat = await fs.promises.stat(itemPath)
+              const ext = path.extname(item.name).toLowerCase()
+              
+              // Only include common file types
+              if ([
+                '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg',
+                '.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv',
+                '.mp3', '.wav', '.flac', '.aac', '.ogg', '.m4a',
+                '.pdf', '.doc', '.docx', '.txt', '.rtf'
+              ].includes(ext)) {
+                
+                let mimeType = 'application/octet-stream'
+                if (['.jpg', '.jpeg'].includes(ext)) mimeType = 'image/jpeg'
+                else if (ext === '.png') mimeType = 'image/png'
+                else if (ext === '.gif') mimeType = 'image/gif'
+                else if (ext === '.webp') mimeType = 'image/webp'
+                else if (['.mp4'].includes(ext)) mimeType = 'video/mp4'
+                else if (['.mp3'].includes(ext)) mimeType = 'audio/mp3'
+                else if (ext === '.pdf') mimeType = 'application/pdf'
+                
+                recentFiles.push({
+                  id: `file-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                  name: item.name,
+                  type: 'file',
+                  size: stat.size,
+                  modified: stat.mtime.toLocaleDateString(),
+                  path: itemPath,
+                  mimeType
+                })
+              }
+            } catch (error) {
+              // Skip files we can't access
+            }
+          }
+        }
+      } catch (error) {
+        // Handle permission errors gracefully
+      }
+    }
+    
+    await collectFiles(downloadPath)
+    
+    // Sort by modification time (newest first) and limit results
+    recentFiles.sort((a, b) => new Date(b.modified).getTime() - new Date(a.modified).getTime())
+    const limitedFiles = recentFiles.slice(0, limit)
+    
+    // Generate thumbnails for the limited set
+    for (const file of limitedFiles) {
+      const thumbnail = await generateFileThumbnail(file.path)
+      if (thumbnail) {
+        file.thumbnail = thumbnail
+      }
+    }
+    
+    return limitedFiles
+  } catch (error) {
+    console.error('Failed to get recent files:', error)
+    return []
+  }
+})
+
+// Generate thumbnail for a specific file
+ipcMain.handle('fs:generate-thumbnail', async (_, filePath: string) => {
+  try {
+    return await generateFileThumbnail(filePath)
+  } catch (error) {
+    console.error('Failed to generate thumbnail:', error)
+    return null
+  }
+})
+
 // Window controls
 ipcMain.handle('window:minimize', () => {
   win?.minimize()
@@ -396,4 +508,71 @@ ipcMain.handle('window:maximize', () => {
 
 ipcMain.handle('window:close', () => {
   win?.close()
-}) 
+})
+
+// Thumbnail generation for images
+const generateImageThumbnail = async (filePath: string): Promise<string | null> => {
+  try {
+    if (sharp) {
+      // Use sharp for high-quality thumbnails
+      const thumbnailBuffer = await sharp(filePath)
+        .resize(64, 64, { fit: 'cover' })
+        .jpeg({ quality: 80 })
+        .toBuffer()
+      
+      return `data:image/jpeg;base64,${thumbnailBuffer.toString('base64')}`
+    } else {
+      // Fallback: read the file and return a smaller version
+      const fileBuffer = await fs.promises.readFile(filePath)
+      const fileType = path.extname(filePath).toLowerCase()
+      
+      if (['.jpg', '.jpeg'].includes(fileType)) {
+        return `data:image/jpeg;base64,${fileBuffer.toString('base64')}`
+      } else if (fileType === '.png') {
+        return `data:image/png;base64,${fileBuffer.toString('base64')}`
+      } else if (fileType === '.gif') {
+        return `data:image/gif;base64,${fileBuffer.toString('base64')}`
+      } else if (fileType === '.webp') {
+        return `data:image/webp;base64,${fileBuffer.toString('base64')}`
+      }
+    }
+  } catch (error) {
+    console.error('Failed to generate thumbnail for:', filePath, error)
+  }
+  return null
+}
+
+// Extract album art from audio files
+const extractAudioThumbnail = async (filePath: string): Promise<string | null> => {
+  try {
+    if (musicMetadata) {
+      const metadata = await musicMetadata.parseFile(filePath)
+      const picture = metadata.common.picture?.[0]
+      
+      if (picture) {
+        const mimeType = picture.format || 'image/jpeg'
+        return `data:${mimeType};base64,${picture.data.toString('base64')}`
+      }
+    }
+  } catch (error) {
+    console.error('Failed to extract audio metadata for:', filePath, error)
+  }
+  return null
+}
+
+// Generate thumbnail for any file type
+const generateFileThumbnail = async (filePath: string): Promise<string | null> => {
+  const ext = path.extname(filePath).toLowerCase()
+  
+  // Image thumbnails
+  if (['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'].includes(ext)) {
+    return await generateImageThumbnail(filePath)
+  }
+  
+  // Audio file album art
+  if (['.mp3', '.wav', '.flac', '.aac', '.ogg', '.m4a'].includes(ext)) {
+    return await extractAudioThumbnail(filePath)
+  }
+  
+  return null
+} 

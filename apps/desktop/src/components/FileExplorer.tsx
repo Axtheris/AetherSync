@@ -1,27 +1,20 @@
 import { useState, useEffect } from 'react'
 import { Search, Eye, Copy, Trash2, ExternalLink, FolderOpen } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { useTransferStore } from '../stores/transfer-store'
+import { useTransferStore, type RecentFile } from '../stores/transfer-store'
 import { 
   formatFileSize, 
   getFileIcon, 
   getFileColor,
   generateShareLink 
 } from '../utils/file-utils'
-
-interface FileItem {
-  id: string
-  name: string
-  type: 'folder' | 'file'
-  size?: number
-  modified: string
-  path: string
-  mimeType?: string
-}
+import { FileIcon } from './FileIcon'
 
 export default function FileExplorer() {
   const [selectedView, setSelectedView] = useState<'files' | 'shares'>('files')
   const [searchQuery, setSearchQuery] = useState('')
+  const [recentFiles, setRecentFiles] = useState<RecentFile[]>([])
+  const [isLoadingFiles, setIsLoadingFiles] = useState(false)
   
   const { 
     shareLinks, 
@@ -29,6 +22,7 @@ export default function FileExplorer() {
     downloadPath,
     deleteShareLink,
     createShareLink,
+    getRecentFiles,
     initialize 
   } = useTransferStore()
 
@@ -36,53 +30,31 @@ export default function FileExplorer() {
     initialize()
   }, [initialize])
 
-  // Generate recent files based on file analysis
-  const generateRecentFiles = (): FileItem[] => {
-    if (!fileAnalysis) return []
-    
-    const files: FileItem[] = []
-    const fileTypes = [
-      { ext: 'jpg', type: 'image/jpeg', category: 'photos' },
-      { ext: 'png', type: 'image/png', category: 'photos' },
-      { ext: 'mp4', type: 'video/mp4', category: 'videos' },
-      { ext: 'mp3', type: 'audio/mp3', category: 'sound' },
-      { ext: 'pdf', type: 'application/pdf', category: 'documents' },
-      { ext: 'docx', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', category: 'documents' },
-    ]
-    
-    // Create sample files based on actual counts
-    fileTypes.forEach((fileType, index) => {
-      const category = fileType.category as keyof typeof fileAnalysis
-      const count = fileAnalysis[category]?.count || 0
-      
-      if (count > 0) {
-        // Create a few sample files for each category
-        const sampleCount = Math.min(count, 3)
-        for (let i = 0; i < sampleCount; i++) {
-          files.push({
-            id: `file-${index}-${i}`,
-            name: `sample_file_${i + 1}.${fileType.ext}`,
-            type: 'file',
-            size: Math.floor(Math.random() * 50 * 1024 * 1024), // Random size up to 50MB
-            modified: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
-            path: `${downloadPath}/sample_file_${i + 1}.${fileType.ext}`,
-            mimeType: fileType.type
-          })
-        }
-      }
-    })
-    
-    return files.slice(0, 8) // Limit to 8 files
-  }
+  // Load recent files when component mounts or when switching to files view
+  useEffect(() => {
+    if (selectedView === 'files') {
+      loadRecentFiles()
+    }
+  }, [selectedView, getRecentFiles])
 
-  const recentFiles = generateRecentFiles()
+  const loadRecentFiles = async () => {
+    setIsLoadingFiles(true)
+    try {
+      const files = await getRecentFiles(20)
+      setRecentFiles(files)
+    } catch (error) {
+      console.error('Failed to load recent files:', error)
+    } finally {
+      setIsLoadingFiles(false)
+    }
+  }
   
   // Filter files based on search query
   const filteredFiles = recentFiles.filter(file =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleOpenFile = async (file: FileItem) => {
+  const handleOpenFile = async (file: RecentFile) => {
     if (window.electronAPI) {
       const success = await window.electronAPI.fs.openFile(file.path)
       if (!success) {
@@ -91,7 +63,7 @@ export default function FileExplorer() {
     }
   }
 
-  const handleShowInFolder = async (file: FileItem) => {
+  const handleShowInFolder = async (file: RecentFile) => {
     if (window.electronAPI) {
       const success = await window.electronAPI.fs.showInFolder(file.path)
       if (!success) {
@@ -100,7 +72,7 @@ export default function FileExplorer() {
     }
   }
 
-  const handleCreateShareLink = async (file: FileItem) => {
+  const handleCreateShareLink = async (file: RecentFile) => {
     try {
       const shareLink = await createShareLink(file.path)
       const link = generateShareLink(shareLink.shareCode)
@@ -241,22 +213,27 @@ export default function FileExplorer() {
 
             {/* Recent Files */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-text-secondary dark:text-gray-300 mb-3">Recent Files</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-medium text-text-secondary dark:text-gray-300">Recent Files</h3>
+                {isLoadingFiles && (
+                  <div className="text-xs text-text-tertiary dark:text-gray-400">Loading...</div>
+                )}
+              </div>
+              
               {filteredFiles.length > 0 ? (
                 filteredFiles.map((file) => (
                   <div key={file.id} className="group hover:bg-surface-50 dark:hover:bg-gray-700/50 rounded-lg p-2 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3 flex-1 min-w-0">
-                        <div 
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-medium"
-                          style={{ backgroundColor: getFileColor(file.name) }}
-                        >
-                          {getFileIcon(file.name)}
-                        </div>
+                        <FileIcon 
+                          fileName={file.name}
+                          size="md"
+                          thumbnail={file.thumbnail}
+                        />
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium text-text-primary dark:text-white text-sm truncate overflow-hidden" title={file.name}>{file.name}</h4>
                           <p className="text-xs text-text-secondary dark:text-gray-300">
-                            {file.size && formatFileSize(file.size)} • {file.modified}
+                            {formatFileSize(file.size)} • {file.modified}
                           </p>
                         </div>
                       </div>
@@ -290,10 +267,10 @@ export default function FileExplorer() {
               ) : (
                 <div className="text-center py-8">
                   <div className="text-text-tertiary dark:text-gray-400 mb-2">
-                    {searchQuery ? 'No files found' : 'No recent files'}
+                    {searchQuery ? 'No files found' : isLoadingFiles ? 'Loading files...' : 'No recent files'}
                   </div>
                   <div className="text-xs text-text-tertiary dark:text-gray-500">
-                    {searchQuery ? 'Try a different search term' : 'Files will appear here after transfers'}
+                    {searchQuery ? 'Try a different search term' : isLoadingFiles ? 'Please wait' : 'Files will appear here when you have files in your download folder'}
                   </div>
                 </div>
               )}
@@ -310,7 +287,10 @@ export default function FileExplorer() {
                     <div key={shareLink.id} className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-surface-200 dark:border-gray-600">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center space-x-2 flex-1 min-w-0">
-                          <div className="text-lg">{getFileIcon(shareLink.fileName)}</div>
+                          <FileIcon 
+                            fileName={shareLink.fileName}
+                            size="md"
+                          />
                           <div className="flex-1 min-w-0">
                             <h4 className="font-medium text-text-primary dark:text-white text-sm truncate overflow-hidden" title={shareLink.fileName}>
                               {shareLink.fileName}
@@ -359,7 +339,10 @@ export default function FileExplorer() {
                     <div key={shareLink.id} className="bg-surface-50 dark:bg-gray-700/30 rounded-lg p-3 opacity-60">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2 flex-1 min-w-0">
-                          <div className="text-lg">{getFileIcon(shareLink.fileName)}</div>
+                          <FileIcon 
+                            fileName={shareLink.fileName}
+                            size="md"
+                          />
                           <div className="flex-1 min-w-0">
                             <h4 className="font-medium text-text-primary dark:text-white text-sm truncate overflow-hidden" title={shareLink.fileName}>
                               {shareLink.fileName}

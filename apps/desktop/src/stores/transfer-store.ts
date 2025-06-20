@@ -51,6 +51,17 @@ export interface FileAnalysis {
   other: { count: number; size: number }
 }
 
+export interface RecentFile {
+  id: string
+  name: string
+  type: 'file'
+  size: number
+  modified: string
+  path: string
+  mimeType: string
+  thumbnail?: string
+}
+
 interface TransferStore {
   // State
   transfers: TransferFile[]
@@ -73,6 +84,7 @@ interface TransferStore {
   
   updateStorageInfo: () => Promise<void>
   updateFileAnalysis: () => Promise<void>
+  getRecentFiles: (limit?: number) => Promise<RecentFile[]>
   setDownloadPath: (path: string) => Promise<void>
   setFolderSizeLimit: (limit: number) => Promise<void>
   setFolderSizeLimitEnabled: (enabled: boolean) => Promise<void>
@@ -207,6 +219,18 @@ export const useTransferStore = create<TransferStore>()(
           console.error('Failed to update file analysis:', error)
         }
       }
+    },
+
+    getRecentFiles: async (limit = 20) => {
+      if (window.electronAPI) {
+        try {
+          return await window.electronAPI.fs.getRecentFiles(limit)
+        } catch (error) {
+          console.error('Failed to get recent files:', error)
+          return []
+        }
+      }
+      return []
     },
 
     setDownloadPath: async (path: string) => {
