@@ -1,16 +1,29 @@
 # AetherSync
 
-A local-network file transfer tool that allows iOS/Android (Expo) devices and Windows/macOS/Linux (Electron) computers to discover each other automatically over the same Wi-Fi network and transfer files without needing the cloud, cables, or internet.
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/license-CC%20BY--NC%204.0-blue.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+[![Platform](https://img.shields.io/badge/platform-Expo%20%2B%20Electron-2ea44f)](https://expo.dev/)
+[![Built with TypeScript](https://img.shields.io/badge/built%20with-TypeScript-informational)](https://www.typescriptlang.org/)
+[![Status: Alpha](https://img.shields.io/badge/status-Alpha-orange)](https://github.com/Axtheris/AetherSync)
+[![Repo](https://img.shields.io/badge/GitHub-Axtheris%2FAetherSync-6e40c9?logo=github)](https://github.com/Axtheris/AetherSync)
 
-## 🚀 Project Overview
+---
 
-AetherSync is built using a modern TypeScript monorepo with Turborepo, featuring:
+AetherSync is a blazing-fast, zero-setup file transfer tool that connects mobile and desktop devices over your local Wi-Fi network—no internet, cables, or accounts required.
 
-- **Zero-config peer discovery** using mDNS (Bonjour)
-- **Encrypted P2P transfers** via WebRTC DataChannels with HTTP fallback
-- **Cross-platform support** for mobile (iOS/Android/Web) and desktop (Windows/macOS/Linux)
-- **Type-safe protocol** using Protocol Buffers
-- **Modern UI** with TailwindCSS and NativeWind
+Built with a fullstack TypeScript monorepo, AetherSync enables encrypted peer-to-peer (P2P) transfers between iOS, Android, Windows, macOS, Linux, and the Web.
+
+---
+
+## 🚀 Key Features
+
+* 🔍 **Automatic Device Discovery** — via mDNS (Bonjour)
+* 🔐 **Encrypted P2P Transfers** — using WebRTC DataChannels
+* 🧠 **Protocol Buffers** — type-safe, cross-platform communication
+* 💻📱 **Cross-Platform Support** — Expo (iOS/Android/Web) + Electron (Desktop)
+* 🧩 **Modular Architecture** — powered by Turborepo
+* 🎨 **Modern UI** — TailwindCSS + NativeWind
+
+---
 
 ## 📁 Project Structure
 
@@ -20,210 +33,180 @@ AetherSync/
 │   ├── mobile/          # Expo app (iOS/Android/Web)
 │   └── desktop/         # Electron app (Windows/macOS/Linux)
 ├── packages/
-│   ├── protocol/        # Protobuf definitions & mDNS helpers
-│   ├── ui/             # Shared UI components
-│   ├── utils/          # Shared utility functions
-│   ├── eslint-config/  # Shared ESLint configuration
-│   └── typescript-config/ # Shared TypeScript configuration
-└── README.md
+│   ├── protocol/        # Protobuf schema + mDNS helpers
+│   ├── ui/              # Shared UI components (planned)
+│   ├── utils/           # Cross-platform utility functions
+│   ├── eslint-config/   # Shared ESLint rules
+│   └── typescript-config/ # Shared TS config
 ```
-
-## 🛠 Technology Stack
-
-### Core Technologies
-- **TypeScript** - Strict type safety across all packages
-- **Turborepo** - Monorepo build system with caching
-- **Protocol Buffers** - Type-safe message serialization
-- **mDNS** - Zero-config peer discovery
-
-### Mobile App (`apps/mobile`)
-- **Expo Router** - File-based routing for React Native
-- **React Native** - Cross-platform mobile development
-- **NativeWind** - TailwindCSS for React Native
-- **Zustand** - Lightweight state management
-- **expo-document-picker** - File selection
-- **expo-file-system** - File operations
-- **react-native-webrtc** - P2P connections
-
-### Desktop App (`apps/desktop`)
-- **Electron** - Cross-platform desktop apps
-- **React + Vite** - Fast development and builds
-- **TailwindCSS** - Utility-first CSS
-- **electron-store** - Persistent settings
-- **node-webrtc** - WebRTC for desktop
-
-## 📋 Current Implementation Status
-
-### ✅ Completed Features
-
-1. **Monorepo Foundation**
-   - Turborepo configuration with optimized build pipeline
-   - Shared TypeScript and ESLint configurations
-   - Proper workspace dependencies
-
-2. **Protocol Package** (`packages/protocol`)
-   - Complete protobuf schema with 6 message types:
-     - `DiscoverPing` / `DiscoverPong` - Device discovery
-     - `FileMeta` - File metadata
-     - `FileChunk` - File data chunks
-     - `Ack` - Transfer acknowledgments
-     - `Error` - Error handling
-   - mDNS service implementation for peer discovery
-   - Protocol utilities (checksum, device ID generation, etc.)
-
-3. **Utilities Package** (`packages/utils`)
-   - File size formatting
-   - MIME type detection
-   - File type categorization
-   - Debounce/throttle utilities
-   - Progress calculation helpers
-
-4. **Mobile App Foundation** (`apps/mobile`)
-   - Expo Router setup with TailwindCSS/NativeWind
-   - Zustand stores for state management:
-     - `PeerStore` - Peer discovery and device management
-     - `TransferStore` - File transfer state and history
-   - Custom hooks:
-     - `usePeerDiscovery()` - mDNS peer discovery
-     - `useFileTransfer()` - File transfer operations
-   - Configured for all required Expo dependencies
-
-### 🚧 Next Steps
-
-1. **Complete Desktop App** (Electron + React)
-2. **Implement WebRTC DataChannels** with HTTP fallback
-3. **Build UI Component Library** (`packages/ui`)
-4. **Add Testing** (Jest + Testing Library + Playwright)
-5. **Set up CI/CD** (GitHub Actions)
-6. **Build & Release Configuration** (EAS Build + electron-builder)
-
-## 🔧 Development Setup
-
-### Prerequisites
-- Node.js 18+
-- npm 10+
-
-### Installation
-
-```bash
-# Clone the repository
-git clone <repository-url>
-cd AetherSync
-
-# Install dependencies
-npm install
-
-# Generate protocol buffers (once implemented)
-npm run generate
-
-# Build all packages
-npm run build
-```
-
-### Development Commands
-
-```bash
-# Start development mode for all apps
-npm run dev
-
-# Build all packages and apps
-npm run build
-
-# Run linting
-npm run lint
-
-# Type checking
-npm run type-check
-
-# Format code
-npm run format
-```
-
-### Mobile Development
-
-```bash
-cd apps/mobile
-
-# Start Expo development server
-npm start
-
-# Run on iOS simulator (macOS only)
-npm run ios
-
-# Run on Android emulator
-npm run android
-
-# Run in web browser
-npm run web
-```
-
-## 🎯 Core Features (Planned)
-
-### Mobile App Screens
-- **`/send`** - Pick files, discover peers, initiate transfers
-- **`/receive`** - Accept incoming transfers, show progress
-- **`/history`** - View transfer history with thumbnails
-
-### Desktop App Pages
-- **Home** - Drag & drop files, peer list, quick transfer
-- **Transfers** - Active and completed transfer management
-- **Settings** - Storage directory configuration
-
-### File Transfer Protocol
-1. **Discovery Phase** - mDNS announces device availability
-2. **Connection** - WebRTC peer connection establishment
-3. **Transfer** - Chunked file transfer with progress tracking
-4. **Verification** - SHA-256 checksum validation
-
-## 🔒 Security Features
-
-- **Encrypted transfers** via WebRTC DTLS
-- **Checksum verification** for data integrity
-- **Local network only** - no internet/cloud dependency
-- **Selective file access** on iOS 17+ with PHPicker
-
-## 📱 Platform Support
-
-### Mobile (Expo)
-- ✅ iOS 13+
-- ✅ Android 8+
-- ✅ Web browsers
-
-### Desktop (Electron)
-- ✅ Windows 10+
-- ✅ macOS 10.15+
-- ✅ Linux (Ubuntu 18.04+)
-
-## 🧪 Testing Strategy
-
-- **Unit tests** for utilities and hooks (Jest + Testing Library)
-- **Integration tests** for file transfer simulation
-- **E2E tests** for desktop app (Playwright)
-- **Performance tests** for 50MB+ file transfers
-
-## 📦 Build & Release
-
-### Mobile App
-- **Expo EAS Build** for iOS/Android
-- **Static web export** for hosting
-
-### Desktop App
-- **electron-builder** for Windows/macOS packages
-- **GitHub Releases** for distribution
-
-## 🤝 Contributing
-
-This project follows modern TypeScript best practices with:
-- Strict type checking
-- Prettier code formatting
-- ESLint code quality checks
-- Conventional commit messages
-- Automated testing
-
-## 📄 License
-
-[Add your license here]
 
 ---
 
-**AetherSync** - Seamless file sharing across your local network 🚀
+## 🧪 Current Status
+
+### ✅ Completed
+
+* Monorepo scaffold (Turborepo)
+* Protocol buffers with 6 message types
+* mDNS peer discovery implementation
+* Shared utility functions
+* Mobile app foundation (Expo + Zustand)
+
+### 🚧 In Progress
+
+* Electron desktop UI
+* WebRTC DataChannel + HTTP fallback
+* Shared component library
+* CI/CD + automated tests
+
+---
+
+## 🛠 Tech Stack
+
+### Core
+
+* **TypeScript** – Strictly typed across all packages
+* **Turborepo** – Monorepo tooling + build caching
+* **Protocol Buffers** – Efficient type-safe messaging
+* **mDNS** – Local device discovery
+
+### Mobile (`apps/mobile`)
+
+* **Expo Router**
+* **React Native + NativeWind**
+* **Zustand** for global state
+* **expo-document-picker**, **expo-file-system**
+* **react-native-webrtc**
+
+### Desktop (`apps/desktop`)
+
+* **Electron + Vite**
+* **React + TailwindCSS**
+* **electron-store**
+* **node-webrtc**
+
+---
+
+## 📲 Mobile App Routes
+
+* `/send` — Pick files → Show available peers → Initiate transfer
+* `/receive` — Accept incoming transfer, show progress
+* `/history` — Transfer logs with preview thumbnails
+
+---
+
+## 💻 Desktop App Views (Planned)
+
+* **Home** — Drag & drop interface + quick peer list
+* **Transfers** — Manage active/completed transfers
+* **Settings** — Choose default storage directory
+
+---
+
+## 🔐 Security
+
+* End-to-end encrypted WebRTC transfers (DTLS)
+* SHA-256 checksums for file integrity
+* Local-only (LAN) communication
+* Explicit file permission requests (iOS 17+ compatible)
+
+---
+
+## ⚙️ Install & Run
+
+### Prerequisites
+
+* Node.js `18+`
+* npm `10+`
+
+### Setup
+
+```bash
+git clone https://github.com/Axtheris/AetherSync.git
+cd AetherSync
+npm install
+npm run build
+```
+
+### Start Dev Mode
+
+```bash
+# Start all apps
+npm run dev
+
+# Run linters and formatters
+npm run lint
+npm run format
+npm run type-check
+```
+
+### Mobile Dev (Expo)
+
+```bash
+cd apps/mobile
+npm start        # Open Expo Dev Tools
+npm run ios      # macOS only
+npm run android
+npm run web
+```
+
+---
+
+## 🧪 Testing Plan
+
+* **Jest** + **React Testing Library** for unit tests
+* **Playwright** for desktop UI E2E
+* Simulated LAN transfers for integration testing
+* Large file performance profiling (100MB+)
+
+---
+
+## 📦 Build & Release
+
+### Mobile
+
+* **EAS Build** for iOS/Android
+* **Static Export** for web version
+
+### Desktop
+
+* **electron-builder** for generating `.exe` / `.dmg` / `.AppImage`
+* Released via GitHub Releases
+
+---
+
+## 🧠 Future Roadmap
+
+* Fallback QR-based pairing (for mDNS-less setups)
+* Optional WebSocket relay for fallback connectivity
+* Resumable transfers + auto-retry
+* Batch transfers
+* LAN-based messaging (light chat)
+* Transfer previews & notifications
+
+---
+
+## 🤝 Contributing
+
+We welcome issues, feature requests, and pull requests.
+
+### Guidelines
+
+* Use [Conventional Commits](https://www.conventionalcommits.org/)
+* Run `npm run format && npm run lint` before pushing
+* Include tests for new features
+* Include screenshots/recordings for visual/UI updates
+
+---
+
+## 📄 License
+
+AetherSync is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/).
+
+See [`LICENSE.md`](./LICENSE.md) for full legal terms.
+
+---
+
+> ✨ AetherSync is built for people who miss when sharing files just... worked.
+
+---
