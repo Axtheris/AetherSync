@@ -1,0 +1,35 @@
+/* Drag region for window movement */
+.drag-region {
+  -webkit-app-region: drag;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Hide default scrollbars in some areas */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Glassmorphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* File drop zone */
+.dropzone {
+  transition: all 0.2s ease;
+}
+
+.dropzone.active {
+  transform: scale(1.02);
+  box-shadow: 0 20px 40px -4px rgba(99, 102, 241, 0.2);
+} 
