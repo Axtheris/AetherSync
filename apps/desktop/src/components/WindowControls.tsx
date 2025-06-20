@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Minus, Square, X, Settings as SettingsIcon } from 'lucide-react'
+import { Settings as SettingsIcon } from 'lucide-react'
 import Settings from './Settings'
 
 export default function WindowControls() {
@@ -25,7 +25,7 @@ export default function WindowControls() {
 
   return (
     <>
-      <div className="flex items-center justify-between h-8 bg-white/20 backdrop-blur-sm border-b border-white/20 drag-handle">
+      <div className="flex items-center justify-between h-8 bg-white/20 dark:bg-black/20 backdrop-blur-sm border-b border-white/20 dark:border-gray-700/50 drag-handle">
         {/* macOS Traffic Light Buttons (Left) */}
         <div className="flex items-center space-x-2 pl-4">
           <button
@@ -47,14 +47,14 @@ export default function WindowControls() {
 
         {/* App Title (Center) */}
         <div className="flex-1 text-center">
-          <h1 className="text-sm font-medium text-text-primary">AetherSync</h1>
+          <h1 className="text-sm font-medium text-text-primary dark:text-white">AetherSync</h1>
         </div>
 
         {/* Settings Button (Right) */}
         <div className="pr-4">
           <button
             onClick={() => setIsSettingsOpen(true)}
-            className="p-1 text-text-tertiary hover:text-text-primary transition-colors"
+            className="p-1 text-text-tertiary hover:text-text-primary dark:text-gray-400 dark:hover:text-white transition-colors"
             aria-label="Settings"
           >
             <SettingsIcon size={14} />

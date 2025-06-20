@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { Upload, Download, X, CheckCircle, AlertCircle, Link2, Copy, Clock } from 'lucide-react'
+import { Upload, Download, X, CheckCircle, Link2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useTransferStore } from '../stores/transfer-store'
 import { 
@@ -19,7 +19,6 @@ const MainContent: React.FC = () => {
   
   const { 
     transfers, 
-    shareLinks,
     addTransfer, 
     removeTransfer, 
     createShareLink,
@@ -127,16 +126,16 @@ const MainContent: React.FC = () => {
   const avgSpeed = activeTransfers.length > 0 ? totalSpeed / activeTransfers.length : 0
 
   return (
-    <div className="flex-1 flex flex-col bg-white/30 backdrop-blur-sm">
+    <div className="flex-1 flex flex-col bg-white/30 dark:bg-gray-900/30 backdrop-blur-sm">
       {/* Header Tabs */}
-      <div className="flex items-center border-b border-surface-200 px-6 py-4">
-        <div className="flex space-x-1 bg-surface-100 rounded-lg p-1">
+      <div className="flex items-center border-b border-surface-200 dark:border-gray-700 px-6 py-4">
+        <div className="flex space-x-1 bg-surface-100 dark:bg-gray-700 rounded-lg p-1">
           <button
             onClick={() => setActiveTab('upload')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'upload'
-                ? 'bg-white text-text-primary shadow-sm'
-                : 'text-text-secondary hover:text-text-primary'
+                ? 'bg-white dark:bg-gray-600 text-text-primary dark:text-white shadow-sm'
+                : 'text-text-secondary dark:text-gray-300 hover:text-text-primary dark:hover:text-white'
             }`}
           >
             Upload
@@ -145,8 +144,8 @@ const MainContent: React.FC = () => {
             onClick={() => setActiveTab('download')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'download'
-                ? 'bg-white text-text-primary shadow-sm'
-                : 'text-text-secondary hover:text-text-primary'
+                ? 'bg-white dark:bg-gray-600 text-text-primary dark:text-white shadow-sm'
+                : 'text-text-secondary dark:text-gray-300 hover:text-text-primary dark:hover:text-white'
             }`}
           >
             Download
@@ -163,23 +162,23 @@ const MainContent: React.FC = () => {
               className={`
                 border-2 border-dashed rounded-xl p-12 text-center transition-all duration-200 mb-6
                 ${isDragOver 
-                  ? 'border-primary-500 bg-primary-50 scale-105' 
-                  : 'border-surface-300 hover:border-surface-400'
+                  ? 'border-primary-500 bg-primary-50 dark:bg-primary-500/10 scale-105' 
+                  : 'border-surface-300 dark:border-gray-600 hover:border-surface-400 dark:hover:border-gray-500'
                 }
               `}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
             >
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Upload size={32} className="text-primary-500" />
+              <div className="w-16 h-16 bg-primary-100 dark:bg-primary-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Upload size={32} className="text-primary-500 dark:text-primary-400" />
               </div>
               
-              <h3 className="text-xl font-semibold text-text-primary mb-2">
+              <h3 className="text-xl font-semibold text-text-primary dark:text-white mb-2">
                 Drag & drop files to share
               </h3>
               
-              <p className="text-text-secondary mb-4">
+              <p className="text-text-secondary dark:text-gray-300 mb-4">
                 or click to choose files
               </p>
 
@@ -190,7 +189,7 @@ const MainContent: React.FC = () => {
                 Choose Files
               </button>
               
-              <div className="text-sm text-text-tertiary">
+              <div className="text-sm text-text-tertiary dark:text-gray-400">
                 <p>All file types supported</p>
                 <p>Max 10GB per file</p>
               </div>
@@ -199,16 +198,16 @@ const MainContent: React.FC = () => {
         ) : (
           <>
             {/* Download Area */}
-            <div className="border-2 border-dashed border-surface-300 rounded-xl p-12 text-center mb-6">
-              <div className="w-16 h-16 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Download size={32} className="text-secondary-500" />
+            <div className="border-2 border-dashed border-surface-300 dark:border-gray-600 rounded-xl p-12 text-center mb-6">
+              <div className="w-16 h-16 bg-secondary-100 dark:bg-secondary-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Download size={32} className="text-secondary-500 dark:text-secondary-400" />
               </div>
               
-              <h3 className="text-xl font-semibold text-text-primary mb-2">
+              <h3 className="text-xl font-semibold text-text-primary dark:text-white mb-2">
                 Paste share link to download
               </h3>
               
-              <p className="text-text-secondary mb-4">
+              <p className="text-text-secondary dark:text-gray-300 mb-4">
                 Enter or paste an AetherSync share link
               </p>
 
@@ -218,12 +217,12 @@ const MainContent: React.FC = () => {
                   value={shareInput}
                   onChange={(e) => setShareInput(e.target.value)}
                   placeholder="aethersync://share/ABC123XY"
-                  className="flex-1 px-4 py-2 border border-surface-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="flex-1 px-4 py-2 border border-surface-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 />
                 <button
                   onClick={handlePasteShareLink}
                   disabled={!shareInput.trim()}
-                  className="px-4 py-2 bg-secondary-500 hover:bg-secondary-600 disabled:bg-surface-300 text-white rounded-lg transition-colors"
+                  className="px-4 py-2 bg-secondary-500 hover:bg-secondary-600 disabled:bg-surface-300 dark:disabled:bg-gray-600 text-white rounded-lg transition-colors"
                 >
                   Download
                 </button>
@@ -236,17 +235,17 @@ const MainContent: React.FC = () => {
         {activeTransfers.length > 0 && (
           <div className="space-y-4 mb-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-text-primary">
+              <h3 className="text-lg font-semibold text-text-primary dark:text-white">
                 Active Transfers
               </h3>
-              <span className="text-sm text-text-secondary">
+              <span className="text-sm text-text-secondary dark:text-gray-300">
                 {activeTransfers.length} in progress
               </span>
             </div>
 
             <div className="space-y-3">
               {activeTransfers.map((transfer) => (
-                <div key={transfer.id} className="bg-white rounded-lg p-4 shadow-sm border border-surface-200">
+                <div key={transfer.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-surface-200 dark:border-gray-700">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
                       <div className="text-2xl">{getFileIcon(transfer.name)}</div>
@@ -269,22 +268,22 @@ const MainContent: React.FC = () => {
 
                   <div>
                     <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-text-secondary">
+                      <span className="text-text-secondary dark:text-gray-300">
                         {transfer.status === 'uploading' ? 'Uploading...' : 
                          transfer.status === 'downloading' ? 'Downloading...' : 'Pending...'}
                       </span>
                       <div className="flex items-center space-x-4">
                         {transfer.speed && (
                           <>
-                            <span className="text-text-tertiary">
+                            <span className="text-text-tertiary dark:text-gray-400">
                               {formatTransferSpeed(transfer.speed)}
                             </span>
-                            <span className="text-text-tertiary">
+                            <span className="text-text-tertiary dark:text-gray-400">
                               {estimateTimeRemaining(transfer.size, (transfer.progress * transfer.size) / 100, transfer.speed)}
                             </span>
                           </>
                         )}
-                        <span className="font-medium text-text-primary">{transfer.progress.toFixed(1)}%</span>
+                        <span className="font-medium text-text-primary dark:text-white">{transfer.progress.toFixed(1)}%</span>
                       </div>
                     </div>
                     <div className="w-full bg-surface-200 rounded-full h-2">
@@ -304,23 +303,23 @@ const MainContent: React.FC = () => {
         {completedTransfers.length > 0 && (
           <div className="space-y-4 mb-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-text-primary">
+              <h3 className="text-lg font-semibold text-text-primary dark:text-white">
                 Recent Transfers
               </h3>
-              <span className="text-sm text-text-secondary">
+              <span className="text-sm text-text-secondary dark:text-gray-300">
                 {completedTransfers.length} completed
               </span>
             </div>
 
             <div className="space-y-3">
               {completedTransfers.slice(0, 5).map((transfer) => (
-                <div key={transfer.id} className="bg-white rounded-lg p-4 shadow-sm border border-surface-200">
+                <div key={transfer.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-surface-200 dark:border-gray-700">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="text-2xl">{getFileIcon(transfer.name)}</div>
                       <div className="min-w-0 flex-1">
                         <h4 className="font-medium text-text-primary truncate" title={transfer.name}>{transfer.name}</h4>
-                        <p className="text-sm text-text-secondary">
+                        <p className="text-sm text-text-secondary dark:text-gray-300">
                           {formatFileSize(transfer.size)} • Completed {transfer.completedAt?.toLocaleTimeString()}
                         </p>
                       </div>
@@ -353,26 +352,26 @@ const MainContent: React.FC = () => {
         {/* Transfer Stats */}
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-text-primary">
+            <div className="text-2xl font-bold text-text-primary dark:text-white">
               {completedTransfers.length}
             </div>
-            <div className="text-sm text-text-secondary">Completed</div>
-            <div className="text-xs text-text-tertiary">
+            <div className="text-sm text-text-secondary dark:text-gray-300">Completed</div>
+            <div className="text-xs text-text-tertiary dark:text-gray-400">
               {formatFileSize(completedTransfers.reduce((sum, t) => sum + t.size, 0))}
             </div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-text-primary">
+            <div className="text-2xl font-bold text-text-primary dark:text-white">
               {activeTransfers.length}
             </div>
-            <div className="text-sm text-text-secondary">Active transfers</div>
+            <div className="text-sm text-text-secondary dark:text-gray-300">Active transfers</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-text-primary">
+            <div className="text-2xl font-bold text-text-primary dark:text-white">
               {avgSpeed > 0 ? formatTransferSpeed(avgSpeed).split('/')[0] : '0 B'}
             </div>
-            <div className="text-sm text-text-secondary">Avg speed</div>
-            <div className="text-xs text-text-tertiary">
+            <div className="text-sm text-text-secondary dark:text-gray-300">Avg speed</div>
+            <div className="text-xs text-text-tertiary dark:text-gray-400">
               {avgSpeed > 0 ? formatTransferSpeed(avgSpeed) : '0 B/s'}
             </div>
           </div>

@@ -77,7 +77,7 @@ interface FilePreviewProps {
 
 export const FilePreview: React.FC<FilePreviewProps> = ({
   fileName,
-  filePath,
+  filePath: _filePath,
   fileSize,
   className = '',
   onPreview,

@@ -16,7 +16,7 @@ function App() {
   }, [initialize])
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-background-from to-background-to">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-background-from to-background-to dark:from-gray-900 dark:to-gray-800">
       {/* Window Controls (macOS style) */}
       <WindowControls />
       

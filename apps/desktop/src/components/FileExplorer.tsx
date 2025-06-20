@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Folder, Search, MoreHorizontal, ArrowLeft, Eye, Copy, Trash2, ExternalLink, FolderOpen } from 'lucide-react'
+import { Search, Eye, Copy, Trash2, ExternalLink, FolderOpen } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useTransferStore } from '../stores/transfer-store'
 import { 
@@ -152,31 +152,31 @@ export default function FileExplorer() {
   const expiredShareLinks = shareLinks.filter(link => new Date(link.expiresAt) <= new Date())
 
   return (
-    <div className="w-80 bg-white/50 backdrop-blur-sm border-l border-surface-200 flex flex-col">
+    <div className="w-80 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-l border-surface-200 dark:border-gray-700 flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-surface-200">
+      <div className="p-4 border-b border-surface-200 dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-text-primary">File Manager</h2>
+          <h2 className="text-lg font-semibold text-text-primary dark:text-white">File Manager</h2>
           <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-tertiary" />
+            <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-tertiary dark:text-gray-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search files..."
-              className="pl-9 pr-3 py-1.5 text-sm border border-surface-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50"
+              className="pl-9 pr-3 py-1.5 text-sm border border-surface-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-gray-700/50 text-text-primary dark:text-white placeholder-text-tertiary dark:placeholder-gray-400"
             />
           </div>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex space-x-1 bg-surface-100 rounded-lg p-1">
+        <div className="flex space-x-1 bg-surface-100 dark:bg-gray-700 rounded-lg p-1">
           <button
             onClick={() => setSelectedView('files')}
             className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
               selectedView === 'files'
-                ? 'bg-white text-text-primary shadow-sm'
-                : 'text-text-secondary hover:text-text-primary'
+                ? 'bg-white dark:bg-gray-600 text-text-primary dark:text-white shadow-sm'
+                : 'text-text-secondary dark:text-gray-300 hover:text-text-primary dark:hover:text-white'
             }`}
           >
             Recent Files
@@ -185,8 +185,8 @@ export default function FileExplorer() {
             onClick={() => setSelectedView('shares')}
             className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
               selectedView === 'shares'
-                ? 'bg-white text-text-primary shadow-sm'
-                : 'text-text-secondary hover:text-text-primary'
+                ? 'bg-white dark:bg-gray-600 text-text-primary dark:text-white shadow-sm'
+                : 'text-text-secondary dark:text-gray-300 hover:text-text-primary dark:hover:text-white'
             }`}
           >
             Share Links
@@ -199,11 +199,11 @@ export default function FileExplorer() {
         {selectedView === 'files' ? (
           <div className="p-4">
             {/* Download Folder Access */}
-            <div className="bg-surface-50 rounded-lg p-3 mb-4">
+            <div className="bg-surface-50 dark:bg-gray-700/50 rounded-lg p-3 mb-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <FolderOpen size={16} className="text-primary-500" />
-                  <span className="text-sm font-medium text-text-primary">Downloads</span>
+                  <span className="text-sm font-medium text-text-primary dark:text-white">Downloads</span>
                 </div>
                 <button
                   onClick={handleOpenDownloadFolder}
@@ -212,39 +212,39 @@ export default function FileExplorer() {
                   <ExternalLink size={14} />
                 </button>
               </div>
-                             <p className="text-xs text-text-secondary mt-1 truncate overflow-hidden" title={downloadPath || 'No download path set'}>
-                 {downloadPath || 'No download path set'}
-               </p>
+              <p className="text-xs text-text-secondary dark:text-gray-300 mt-1 truncate overflow-hidden" title={downloadPath || 'No download path set'}>
+                {downloadPath || 'No download path set'}
+              </p>
             </div>
 
             {/* File Type Summary */}
             {fileAnalysis && (
               <div className="grid grid-cols-2 gap-2 mb-4">
-                <div className="bg-white/50 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-text-primary">{fileAnalysis.documents.count}</div>
-                  <div className="text-xs text-text-secondary">Documents</div>
+                <div className="bg-white/50 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-text-primary dark:text-white">{fileAnalysis.documents.count}</div>
+                  <div className="text-xs text-text-secondary dark:text-gray-300">Documents</div>
                 </div>
-                <div className="bg-white/50 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-text-primary">{fileAnalysis.photos.count}</div>
-                  <div className="text-xs text-text-secondary">Images</div>
+                <div className="bg-white/50 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-text-primary dark:text-white">{fileAnalysis.photos.count}</div>
+                  <div className="text-xs text-text-secondary dark:text-gray-300">Images</div>
                 </div>
-                <div className="bg-white/50 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-text-primary">{fileAnalysis.videos.count}</div>
-                  <div className="text-xs text-text-secondary">Videos</div>
+                <div className="bg-white/50 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-text-primary dark:text-white">{fileAnalysis.videos.count}</div>
+                  <div className="text-xs text-text-secondary dark:text-gray-300">Videos</div>
                 </div>
-                <div className="bg-white/50 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-text-primary">{fileAnalysis.sound.count}</div>
-                  <div className="text-xs text-text-secondary">Audio</div>
+                <div className="bg-white/50 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-text-primary dark:text-white">{fileAnalysis.sound.count}</div>
+                  <div className="text-xs text-text-secondary dark:text-gray-300">Audio</div>
                 </div>
               </div>
             )}
 
             {/* Recent Files */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-text-secondary mb-3">Recent Files</h3>
+              <h3 className="text-sm font-medium text-text-secondary dark:text-gray-300 mb-3">Recent Files</h3>
               {filteredFiles.length > 0 ? (
                 filteredFiles.map((file) => (
-                  <div key={file.id} className="group hover:bg-surface-50 rounded-lg p-2 transition-colors">
+                  <div key={file.id} className="group hover:bg-surface-50 dark:hover:bg-gray-700/50 rounded-lg p-2 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3 flex-1 min-w-0">
                         <div 
@@ -253,12 +253,12 @@ export default function FileExplorer() {
                         >
                           {getFileIcon(file.name)}
                         </div>
-                                                 <div className="flex-1 min-w-0">
-                           <h4 className="font-medium text-text-primary text-sm truncate overflow-hidden" title={file.name}>{file.name}</h4>
-                           <p className="text-xs text-text-secondary">
-                             {file.size && formatFileSize(file.size)} • {file.modified}
-                           </p>
-                         </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-text-primary dark:text-white text-sm truncate overflow-hidden" title={file.name}>{file.name}</h4>
+                          <p className="text-xs text-text-secondary dark:text-gray-300">
+                            {file.size && formatFileSize(file.size)} • {file.modified}
+                          </p>
+                        </div>
                       </div>
                       
                       <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -289,10 +289,10 @@ export default function FileExplorer() {
                 ))
               ) : (
                 <div className="text-center py-8">
-                  <div className="text-text-tertiary mb-2">
+                  <div className="text-text-tertiary dark:text-gray-400 mb-2">
                     {searchQuery ? 'No files found' : 'No recent files'}
                   </div>
-                  <div className="text-xs text-text-tertiary">
+                  <div className="text-xs text-text-tertiary dark:text-gray-500">
                     {searchQuery ? 'Try a different search term' : 'Files will appear here after transfers'}
                   </div>
                 </div>
@@ -304,21 +304,21 @@ export default function FileExplorer() {
             {/* Active Share Links */}
             {activeShareLinks.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-sm font-medium text-text-secondary mb-3">Active Links</h3>
+                <h3 className="text-sm font-medium text-text-secondary dark:text-gray-300 mb-3">Active Links</h3>
                 <div className="space-y-3">
                   {activeShareLinks.map((shareLink) => (
-                    <div key={shareLink.id} className="bg-white rounded-lg p-3 border border-surface-200">
+                    <div key={shareLink.id} className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-surface-200 dark:border-gray-600">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center space-x-2 flex-1 min-w-0">
                           <div className="text-lg">{getFileIcon(shareLink.fileName)}</div>
-                                                     <div className="flex-1 min-w-0">
-                             <h4 className="font-medium text-text-primary text-sm truncate overflow-hidden" title={shareLink.fileName}>
-                               {shareLink.fileName}
-                             </h4>
-                             <p className="text-xs text-text-secondary">
-                               Code: {shareLink.shareCode}
-                             </p>
-                           </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-text-primary dark:text-white text-sm truncate overflow-hidden" title={shareLink.fileName}>
+                              {shareLink.fileName}
+                            </h4>
+                            <p className="text-xs text-text-secondary dark:text-gray-300">
+                              Code: {shareLink.shareCode}
+                            </p>
+                          </div>
                         </div>
                         <button
                           onClick={() => handleDeleteShareLink(shareLink.id)}
@@ -330,10 +330,10 @@ export default function FileExplorer() {
                       </div>
                       
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-text-secondary">
+                        <span className="text-text-secondary dark:text-gray-300">
                           {shareLink.downloadCount}/{shareLink.maxDownloads} downloads
                         </span>
-                        <span className="text-text-secondary">
+                        <span className="text-text-secondary dark:text-gray-300">
                           {formatShareExpiry(shareLink.expiresAt)}
                         </span>
                       </div>
@@ -353,19 +353,19 @@ export default function FileExplorer() {
             {/* Expired Share Links */}
             {expiredShareLinks.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium text-text-secondary mb-3">Expired Links</h3>
+                <h3 className="text-sm font-medium text-text-secondary dark:text-gray-300 mb-3">Expired Links</h3>
                 <div className="space-y-2">
                   {expiredShareLinks.map((shareLink) => (
-                    <div key={shareLink.id} className="bg-surface-50 rounded-lg p-3 opacity-60">
+                    <div key={shareLink.id} className="bg-surface-50 dark:bg-gray-700/30 rounded-lg p-3 opacity-60">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2 flex-1 min-w-0">
                           <div className="text-lg">{getFileIcon(shareLink.fileName)}</div>
-                                                     <div className="flex-1 min-w-0">
-                             <h4 className="font-medium text-text-primary text-sm truncate overflow-hidden" title={shareLink.fileName}>
-                               {shareLink.fileName}
-                             </h4>
-                             <p className="text-xs text-text-secondary">Expired</p>
-                           </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-text-primary dark:text-white text-sm truncate overflow-hidden" title={shareLink.fileName}>
+                              {shareLink.fileName}
+                            </h4>
+                            <p className="text-xs text-text-secondary dark:text-gray-400">Expired</p>
+                          </div>
                         </div>
                         <button
                           onClick={() => handleDeleteShareLink(shareLink.id)}

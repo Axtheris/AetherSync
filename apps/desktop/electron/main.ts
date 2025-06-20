@@ -175,56 +175,64 @@ ipcMain.handle('fs:show-in-folder', async (_, filePath: string) => {
 // Get real disk usage information
 const getDiskUsage = async (dirPath: string) => {
   try {
-    // Get actual drive stats using statvfs (Unix) or equivalent
-    if (fs.promises.statfs) {
+    // Try Windows implementation first since that's most common
+    if (process.platform === 'win32') {
       try {
-        const stats = await fs.promises.statfs(dirPath)
-        const total = (stats as any).blocks * (stats as any).frsize
-        const free = (stats as any).bavail * (stats as any).frsize
-        const used = total - free
-        
-        return { total, free, used }
-      } catch {
-        // Fall through to Windows implementation
-      }
-    }
-    
-    {
-      // Fallback for Windows or systems without statfs
-      // Use approximate calculation based on drive
-      const driveLetter = path.parse(dirPath).root
-      
-      // Try to get disk space using wmic on Windows
-      if (process.platform === 'win32') {
         const { exec } = require('child_process')
         const execPromise = promisify(exec)
         
-        try {
-          const { stdout } = await execPromise(`wmic logicaldisk where caption="${driveLetter}" get size,freespace /value`)
-          const lines: string[] = stdout.split('\n').filter((line: string) => line.includes('='))
-          
-          let total = 0, free = 0
-          for (const line of lines) {
-            if (line.startsWith('Size=')) {
-              total = parseInt(line.split('=')[1]) || 0
-            } else if (line.startsWith('FreeSpace=')) {
-              free = parseInt(line.split('=')[1]) || 0
-            }
+        const driveLetter = path.parse(dirPath).root.replace('\\', '')
+        const { stdout } = await execPromise(`wmic logicaldisk where caption="${driveLetter}" get size,freespace /value`)
+        const lines: string[] = stdout.split('\n').filter((line: string) => line.trim().includes('='))
+        
+        let total = 0, free = 0
+        for (const line of lines) {
+          const trimmedLine = line.trim()
+          if (trimmedLine.startsWith('Size=')) {
+            total = parseInt(trimmedLine.split('=')[1]) || 0
+          } else if (trimmedLine.startsWith('FreeSpace=')) {
+            free = parseInt(trimmedLine.split('=')[1]) || 0
           }
-          
+        }
+        
+        if (total > 0) {
           return { total, free, used: total - free }
-        } catch {
-          // Fallback to default values
-          return { total: 100 * 1024 * 1024 * 1024, free: 50 * 1024 * 1024 * 1024, used: 50 * 1024 * 1024 * 1024 }
+        }
+      } catch (error) {
+        console.log('Windows disk space detection failed:', error)
+      }
+    }
+    
+    // Try Unix/macOS statvfs if available
+    try {
+      const stats = await (fs as any).promises?.statfs?.(dirPath)
+      if (stats && stats.blocks && stats.frsize) {
+        const total = stats.blocks * stats.frsize
+        const free = stats.bavail * stats.frsize
+        const used = total - free
+        
+        if (total > 0) {
+          return { total, free, used }
         }
       }
-      
-      // Default fallback
-      return { total: 100 * 1024 * 1024 * 1024, free: 50 * 1024 * 1024 * 1024, used: 50 * 1024 * 1024 * 1024 }
+    } catch (error) {
+      console.log('Unix disk space detection failed:', error)
+    }
+    
+    // Default fallback - estimate based on common drive sizes
+    console.log('Using fallback disk space values')
+    return { 
+      total: 500 * 1024 * 1024 * 1024, // 500GB
+      free: 250 * 1024 * 1024 * 1024,  // 250GB
+      used: 250 * 1024 * 1024 * 1024   // 250GB
     }
   } catch (error) {
     console.error('Failed to get disk usage:', error)
-    return { total: 100 * 1024 * 1024 * 1024, free: 50 * 1024 * 1024 * 1024, used: 50 * 1024 * 1024 * 1024 }
+    return { 
+      total: 500 * 1024 * 1024 * 1024, 
+      free: 250 * 1024 * 1024 * 1024, 
+      used: 250 * 1024 * 1024 * 1024 
+    }
   }
 }
 
@@ -257,44 +265,57 @@ const getDirectorySize = async (dirPath: string): Promise<number> => {
 ipcMain.handle('fs:get-storage-info', async () => {
   try {
     const downloadPath = store.get('downloadPath') as string
-    const folderSizeLimit = store.get('folderSizeLimit') as number
+    const folderSizeLimit = (store.get('folderSizeLimit') as number) || (10 * 1024 * 1024 * 1024)
     const enableFolderSizeLimit = store.get('enableFolderSizeLimit') as boolean
+    
+    console.log('Getting storage info for:', downloadPath)
     
     // Get actual disk usage
     const diskUsage = await getDiskUsage(downloadPath)
+    console.log('Disk usage:', diskUsage)
     
     // Get download folder size
     const folderSize = await getDirectorySize(downloadPath)
+    console.log('Folder size:', folderSize)
     
-    return {
+    // Calculate percentage safely
+    const percentUsed = enableFolderSizeLimit && folderSizeLimit > 0 
+      ? Math.min((folderSize / folderSizeLimit) * 100, 100) 
+      : 0
+    
+    const result = {
       drive: {
-        total: diskUsage.total,
-        used: diskUsage.used,
-        free: diskUsage.free,
+        total: diskUsage.total || 0,
+        used: diskUsage.used || 0,
+        free: diskUsage.free || 0,
       },
       folder: {
-        size: folderSize,
+        size: folderSize || 0,
         limit: folderSizeLimit,
-        limitEnabled: enableFolderSizeLimit,
-        percentUsed: enableFolderSizeLimit ? (folderSize / folderSizeLimit) * 100 : 0,
+        limitEnabled: enableFolderSizeLimit || false,
+        percentUsed: Math.round(percentUsed * 10) / 10, // Round to 1 decimal place
       },
       path: downloadPath,
     }
+    
+    console.log('Storage info result:', result)
+    return result
   } catch (error) {
     console.error('Failed to get storage info:', error)
+    const defaultLimit = 10 * 1024 * 1024 * 1024 // 10GB
     return {
       drive: {
-        total: 0,
-        used: 0,
-        free: 0,
+        total: 500 * 1024 * 1024 * 1024,
+        used: 250 * 1024 * 1024 * 1024,
+        free: 250 * 1024 * 1024 * 1024,
       },
       folder: {
         size: 0,
-        limit: store.get('folderSizeLimit') as number,
-        limitEnabled: store.get('enableFolderSizeLimit') as boolean,
+        limit: (store.get('folderSizeLimit') as number) || defaultLimit,
+        limitEnabled: (store.get('enableFolderSizeLimit') as boolean) || false,
         percentUsed: 0,
       },
-      path: store.get('downloadPath'),
+      path: (store.get('downloadPath') as string) || app.getPath('downloads'),
     }
   }
 })

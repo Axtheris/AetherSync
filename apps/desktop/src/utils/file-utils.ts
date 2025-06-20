@@ -11,6 +11,26 @@ export const formatFileSize = (bytes: number): string => {
   return `${size.toFixed(size < 10 ? 1 : 0)} ${units[unitIndex]}`
 }
 
+export const formatStorageSize = (bytes: number): string => {
+  if (bytes >= 1024 * 1024 * 1024) {
+    return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`
+  } else if (bytes >= 1024 * 1024) {
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  } else if (bytes >= 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`
+  } else {
+    return `${bytes} B`
+  }
+}
+
+export const convertBytesToGB = (bytes: number): number => {
+  return bytes / (1024 * 1024 * 1024)
+}
+
+export const convertGBToBytes = (gb: number): number => {
+  return gb * 1024 * 1024 * 1024
+}
+
 export const getFileExtension = (fileName: string): string => {
   return fileName.split('.').pop()?.toLowerCase() || ''
 }

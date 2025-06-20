@@ -59,6 +59,7 @@ interface TransferStore {
   fileAnalysis: FileAnalysis | null
   downloadPath: string
   isInitialized: boolean
+  isDarkMode: boolean
   
   // Actions
   addTransfer: (file: File, type: 'upload' | 'download') => Promise<string>
@@ -75,6 +76,8 @@ interface TransferStore {
   setDownloadPath: (path: string) => Promise<void>
   setFolderSizeLimit: (limit: number) => Promise<void>
   setFolderSizeLimitEnabled: (enabled: boolean) => Promise<void>
+  toggleDarkMode: () => Promise<void>
+  setDarkMode: (isDark: boolean) => Promise<void>
   
   initialize: () => Promise<void>
 }
@@ -88,9 +91,10 @@ export const useTransferStore = create<TransferStore>()(
     fileAnalysis: null,
     downloadPath: '',
     isInitialized: false,
+    isDarkMode: false,
 
     // Actions
-    addTransfer: async (file: File, type: 'upload' | 'download') => {
+    addTransfer: async (file: File, _type: 'upload' | 'download') => {
       const id = Math.random().toString(36).substr(2, 9)
       const newTransfer: TransferFile = {
         id,
@@ -243,19 +247,71 @@ export const useTransferStore = create<TransferStore>()(
       }
     },
 
+    toggleDarkMode: async () => {
+      const currentMode = get().isDarkMode
+      await get().setDarkMode(!currentMode)
+    },
+
+    setDarkMode: async (isDark: boolean) => {
+      if (window.electronAPI) {
+        try {
+          await window.electronAPI.store.set('theme', isDark ? 'dark' : 'light')
+          set({ isDarkMode: isDark })
+          
+          // Apply theme to document
+          if (isDark) {
+            document.documentElement.classList.add('dark')
+          } else {
+            document.documentElement.classList.remove('dark')
+          }
+        } catch (error) {
+          console.error('Failed to set dark mode:', error)
+        }
+      } else {
+        // Fallback for when electronAPI isn't available
+        set({ isDarkMode: isDark })
+        if (isDark) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+      }
+    },
+
     initialize: async () => {
       if (window.electronAPI && !get().isInitialized) {
         try {
-          const downloadPath = await window.electronAPI.fs.getDownloadPath()
-          set({ downloadPath, isInitialized: true })
-          
-          // Load initial data
-          await Promise.all([
-            get().updateStorageInfo(),
-            get().updateFileAnalysis(),
+          const [downloadPath, theme] = await Promise.all([
+            window.electronAPI.fs.getDownloadPath(),
+            window.electronAPI.store.get('theme')
           ])
+          
+          const isDarkMode = theme === 'dark'
+          set({ downloadPath, isDarkMode, isInitialized: true })
+          
+          // Apply initial theme to document
+          if (isDarkMode) {
+            document.documentElement.classList.add('dark')
+          } else {
+            document.documentElement.classList.remove('dark')
+          }
+          
+          // Load initial data with error handling
+          try {
+            await get().updateStorageInfo()
+          } catch (error) {
+            console.error('Failed to update storage info during initialization:', error)
+          }
+          
+          try {
+            await get().updateFileAnalysis()
+          } catch (error) {
+            console.error('Failed to update file analysis during initialization:', error)
+          }
         } catch (error) {
           console.error('Failed to initialize store:', error)
+          // Set initialized to true anyway so the app can function
+          set({ isInitialized: true })
         }
       }
     },
