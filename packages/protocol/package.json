@@ -1,0 +1,31 @@
+{
+  "name": "@aethersync/protocol",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "npm run generate && tsc",
+    "generate": "pbjs -t static-module -w commonjs -o src/generated/transfer.js src/transfer.proto && pbts -o src/generated/transfer.d.ts src/generated/transfer.js",
+    "dev": "npm run build -- --watch",
+    "lint": "eslint src/",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "protobufjs": "^7.2.6",
+    "multicast-dns": "^7.2.5",
+    "node-dns-sd": "^0.4.1"
+  },
+  "devDependencies": {
+    "@aethersync/eslint-config": "*",
+    "@aethersync/typescript-config": "*",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  }
+} 
