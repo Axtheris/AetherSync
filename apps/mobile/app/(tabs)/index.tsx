@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native'
-import { Card, Button, CircularProgress, Avatar } from '@aethersync/ui'
+import { Card, Button, CircularProgress, Avatar } from '@repo/ui'
 import { usePeerDiscovery } from '../../hooks/usePeerDiscovery'
 import { useFileTransfer } from '../../hooks/useFileTransfer'
 import { usePeerStore } from '../../stores/peer-store'

@@ -1,5 +1,5 @@
 {
-  "name": "@aethersync/desktop",
+  "name": "@repo/desktop",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -19,24 +19,24 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@aethersync/protocol": "*",
-    "@aethersync/ui": "*",
-    "@aethersync/utils": "*",
+    "@repo/protocol": "*",
+    "@repo/ui": "*",
+    "@repo/utils": "*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.0",
+    "react-hot-toast": "^2.4.0",
     "electron-store": "^8.1.0",
     "recharts": "^2.8.0",
     "lucide-react": "^0.294.0",
     "clsx": "^2.0.0",
     "tailwind-merge": "^2.0.0",
     "framer-motion": "^10.16.0",
-    "zustand": "^4.4.0",
-    "node-webrtc": "^0.4.9"
+    "zustand": "^4.4.0"
   },
   "devDependencies": {
-    "@aethersync/eslint-config": "*",
-    "@aethersync/typescript-config": "*",
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@typescript-eslint/eslint-plugin": "^7.1.1",

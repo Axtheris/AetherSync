@@ -1,6 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import WindowControls from './components/WindowControls'
 import Sidebar from './components/Sidebar'
 import MainContent from './components/MainContent'

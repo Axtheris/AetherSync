@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native'
-import { Card, Button } from '@aethersync/ui'
+import { Card, Button } from '@repo/ui'
 import { useTransferStore } from '../../stores/transfer-store'
 import { X, CheckCircle, AlertCircle, Clock, FileText, Image, Video, Music } from 'lucide-react-native'
 
