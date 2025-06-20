@@ -1,5 +1,3 @@
----
-
 # AetherSync — LICENSE
 
 **Copyright © 2025 KM
