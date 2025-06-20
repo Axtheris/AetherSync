@@ -33,7 +33,7 @@
     "tailwind-merge": "^2.0.0",
     "framer-motion": "^10.16.0",
     "zustand": "^4.4.0",
-    "node-webrtc": "^0.4.7"
+    "simple-peer": "^9.11.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
