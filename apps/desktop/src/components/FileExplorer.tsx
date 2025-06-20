@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Folder, Search, MoreHorizontal, ArrowLeft, Eye, Copy } from 'lucide-react'
 
 interface FileItem {
   id: string
   name: string
   type: 'folder' | 'file'
-  size?: number
-  lastModified: string
+  size?: string
+  modified: string
   shared?: boolean
   thumbnail?: string
 }
@@ -18,23 +18,22 @@ interface SharedUser {
   avatar?: string
 }
 
-const FileExplorer: React.FC = () => {
+export default function FileExplorer() {
   const [currentPath, setCurrentPath] = useState('/')
   const [selectedView, setSelectedView] = useState<'folders' | 'shared'>('folders')
-  const [searchQuery, setSearchQuery] = useState('')
   
   // Mock data for folders and files
   const folders: FileItem[] = [
-    { id: '1', name: 'Photos', type: 'folder', lastModified: '16 Sep', size: 123 },
-    { id: '2', name: 'Videos', type: 'folder', lastModified: '09 Feb', size: 236 },
-    { id: '3', name: 'Documents', type: 'folder', lastModified: '12 May', size: 89 },
+    { id: '1', name: 'Photos', type: 'folder', modified: '16 Sep', size: '123' },
+    { id: '2', name: 'Videos', type: 'folder', modified: '09 Feb', size: '236' },
+    { id: '3', name: 'Documents', type: 'folder', modified: '12 May', size: '89' },
   ]
 
   const files: FileItem[] = [
-    { id: '4', name: 'image.jpg', type: 'file', lastModified: '16 Sep', size: 2.1, thumbnail: '🖼️' },
-    { id: '5', name: 'leo.mp4', type: 'file', lastModified: '14 May', size: 45.2, thumbnail: '🎬' },
-    { id: '6', name: 'worst.mp3', type: 'file', lastModified: '12 Mar', size: 3.8, thumbnail: '🎵' },
-    { id: '7', name: 'By Me.mp3', type: 'file', lastModified: '10 Jan', size: 4.2, thumbnail: '🎵' },
+    { id: '4', name: 'image.jpg', type: 'file', modified: '16 Sep', size: '2.1', thumbnail: '🖼️' },
+    { id: '5', name: 'leo.mp4', type: 'file', modified: '14 May', size: '45.2', thumbnail: '🎬' },
+    { id: '6', name: 'worst.mp3', type: 'file', modified: '12 Mar', size: '3.8', thumbnail: '��' },
+    { id: '7', name: 'By Me.mp3', type: 'file', modified: '10 Jan', size: '4.2', thumbnail: '🎵' },
   ]
 
   const sharedUsers: SharedUser[] = [
@@ -116,12 +115,12 @@ const FileExplorer: React.FC = () => {
                     <div>
                       <h4 className="font-medium text-text-primary">{folder.name}</h4>
                       <p className="text-sm text-text-secondary">
-                        {formatFileCount(folder.size || 0)}
+                        {formatFileCount(folder.size ? parseInt(folder.size) : 0)}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs text-text-tertiary">Last Modified: {folder.lastModified}</span>
+                    <span className="text-xs text-text-tertiary">Last Modified: {folder.modified}</span>
                     <button className="opacity-0 group-hover:opacity-100 text-text-tertiary hover:text-text-secondary">
                       <MoreHorizontal size={16} />
                     </button>
@@ -140,7 +139,7 @@ const FileExplorer: React.FC = () => {
                     <div>
                       <h4 className="font-medium text-text-primary text-sm">{file.name}</h4>
                       <p className="text-xs text-text-secondary">
-                        {file.size && formatFileSize(file.size)}
+                        {file.size && formatFileSize(parseInt(file.size))}
                       </p>
                     </div>
                   </div>
@@ -216,6 +215,4 @@ const FileExplorer: React.FC = () => {
       </div>
     </div>
   )
-}
-
-export default FileExplorer 
+} 

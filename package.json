@@ -20,5 +20,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "ansi-escapes": "^7.0.0",
+    "buffer-from": "^1.1.2"
+  }
 }

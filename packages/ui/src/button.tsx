@@ -4,7 +4,8 @@ import React from 'react';
 import { TouchableOpacity, Text, View, ActivityIndicator } from 'react-native';
 
 export interface ButtonProps {
-  title: string;
+  title?: string;
+  children?: React.ReactNode;
   onPress: () => void;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
@@ -18,6 +19,7 @@ export interface ButtonProps {
 
 export const Button: React.FC<ButtonProps> = ({
   title,
+  children,
   onPress,
   variant = 'primary',
   size = 'md',
@@ -90,12 +92,16 @@ export const Button: React.FC<ButtonProps> = ({
             <View className="mr-2">{icon}</View>
           )}
           
-          <Text className={`
-            ${textVariantClasses[variant]}
-            ${textSizeClasses[size]}
-          `}>
-            {title}
-          </Text>
+          {title && (
+            <Text className={`
+              ${textVariantClasses[variant]}
+              ${textSizeClasses[size]}
+            `}>
+              {title}
+            </Text>
+          )}
+          
+          {children}
           
           {icon && iconPosition === 'right' && (
             <View className="ml-2">{icon}</View>

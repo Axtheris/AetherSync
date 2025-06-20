@@ -282,6 +282,7 @@ export function useFileTransfer() {
     // Actions
     pickFiles,
     sendFiles,
+    sendFile: sendFiles,
     cancelFileTransfer,
     acceptFileTransfer,
     rejectFileTransfer,

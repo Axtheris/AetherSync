@@ -24,6 +24,7 @@ export interface TransferStore {
   // State
   activeTransfers: FileTransfer[];
   transferHistory: FileTransfer[];
+  history: FileTransfer[]; // Alias for transferHistory
   isTransferring: boolean;
 
   // Actions
@@ -43,6 +44,7 @@ export const useTransferStore = create<TransferStore>()(
     // Initial state
     activeTransfers: [],
     transferHistory: [],
+    history: [],
     isTransferring: false,
 
     // Actions
@@ -81,9 +83,12 @@ export const useTransferStore = create<TransferStore>()(
           filePath,
         };
 
+        const newHistory = [completedTransfer, ...state.transferHistory];
+
         return {
           activeTransfers: state.activeTransfers.filter(t => t.id !== id),
-          transferHistory: [completedTransfer, ...state.transferHistory],
+          transferHistory: newHistory,
+          history: newHistory,
           isTransferring: state.activeTransfers.length > 1,
         };
       }),
@@ -99,9 +104,12 @@ export const useTransferStore = create<TransferStore>()(
           endTime: Date.now(),
         };
 
+        const newHistory = [cancelledTransfer, ...state.transferHistory];
+
         return {
           activeTransfers: state.activeTransfers.filter(t => t.id !== id),
-          transferHistory: [cancelledTransfer, ...state.transferHistory],
+          transferHistory: newHistory,
+          history: newHistory,
           isTransferring: state.activeTransfers.length > 1,
         };
       }),
@@ -118,9 +126,12 @@ export const useTransferStore = create<TransferStore>()(
           endTime: Date.now(),
         };
 
+        const newHistory = [errorTransfer, ...state.transferHistory];
+
         return {
           activeTransfers: state.activeTransfers.filter(t => t.id !== id),
-          transferHistory: [errorTransfer, ...state.transferHistory],
+          transferHistory: newHistory,
+          history: newHistory,
           isTransferring: state.activeTransfers.length > 1,
         };
       }),
@@ -142,12 +153,16 @@ export const useTransferStore = create<TransferStore>()(
         }),
       })),
 
-    clearHistory: () => set({ transferHistory: [] }),
+    clearHistory: () => set({ transferHistory: [], history: [] }),
 
     removeFromHistory: (id) =>
-      set((state) => ({
-        transferHistory: state.transferHistory.filter(t => t.id !== id),
-      })),
+      set((state) => {
+        const newHistory = state.transferHistory.filter(t => t.id !== id);
+        return {
+          transferHistory: newHistory,
+          history: newHistory,
+        };
+      }),
   }))
 );
 

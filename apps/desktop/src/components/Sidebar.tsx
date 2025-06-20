@@ -1,14 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts'
-import { HardDrive, Users, Calendar, Sparkles, X } from 'lucide-react'
-
-interface StorageData {
-  month: string
-  documents: number
-  sound: number
-  videos: number
-  photos: number
-}
+import { useState, useEffect } from 'react'
+import { Sparkles, X } from 'lucide-react'
 
 interface FileAnalysis {
   documents: { count: number; size: number }
@@ -17,7 +8,7 @@ interface FileAnalysis {
   sound: { count: number; size: number }
 }
 
-const Sidebar: React.FC = () => {
+export default function Sidebar() {
   const [showAIPopup, setShowAIPopup] = useState(true)
   const [fileAnalysis, setFileAnalysis] = useState<FileAnalysis>({
     documents: { count: 0, size: 0 },
@@ -27,20 +18,14 @@ const Sidebar: React.FC = () => {
   })
 
   // Mock data for storage chart (matches the design)
-  const storageData: StorageData[] = [
-    { month: 'Jan', documents: 30, sound: 20, videos: 45, photos: 25 },
-    { month: 'Feb', documents: 45, sound: 35, videos: 52, photos: 40 },
-    { month: 'Mar', documents: 55, sound: 30, videos: 60, photos: 45 },
-    { month: 'Apr', documents: 40, sound: 25, videos: 48, photos: 35 },
-    { month: 'May', documents: 65, sound: 40, videos: 70, photos: 50 },
+  const storageData = [
+    { month: 'Jan', documents: 12, photos: 25, videos: 8, sound: 5 },
+    { month: 'Feb', documents: 18, photos: 32, videos: 12, sound: 8 },
+    { month: 'Mar', documents: 15, photos: 28, videos: 10, sound: 6 },
+    { month: 'Apr', documents: 22, photos: 35, videos: 15, sound: 10 },
+    { month: 'May', documents: 28, photos: 42, videos: 18, sound: 12 },
+    { month: 'Jun', documents: 25, photos: 38, videos: 16, sound: 11 },
   ]
-
-  const colors = {
-    documents: '#3b82f6', // Blue
-    sound: '#10b981',     // Green
-    videos: '#8b5cf6',    // Purple
-    photos: '#f59e0b',    // Orange
-  }
 
   useEffect(() => {
     // Load file analysis from Electron
@@ -121,27 +106,23 @@ const Sidebar: React.FC = () => {
         </div>
 
         {/* Storage Chart */}
-        <div className="h-64 mb-4">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={storageData}>
-              <XAxis 
-                dataKey="month" 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12, fill: '#64748b' }}
-              />
-              <YAxis 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12, fill: '#64748b' }}
-                tickFormatter={(value) => `${value}GB`}
-              />
-              <Bar dataKey="documents" stackId="a" fill={colors.documents} radius={[0, 0, 0, 0]} />
-              <Bar dataKey="sound" stackId="a" fill={colors.sound} radius={[0, 0, 0, 0]} />
-              <Bar dataKey="videos" stackId="a" fill={colors.videos} radius={[0, 0, 0, 0]} />
-              <Bar dataKey="photos" stackId="a" fill={colors.photos} radius={[2, 2, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="h-48 p-4 bg-gradient-to-b from-surface-50 to-white rounded-lg">
+          <div className="flex items-end justify-between h-full space-x-2">
+            {storageData.map((item) => (
+              <div key={item.month} className="flex flex-col items-center flex-1">
+                <div 
+                  className="w-full rounded-t" 
+                  style={{ 
+                    height: `${(item.documents + item.photos + item.videos + item.sound) * 2}px`,
+                    backgroundColor: '#6366f1',
+                    maxHeight: '120px',
+                    minHeight: '8px'
+                  }}
+                />
+                <span className="text-xs text-text-secondary mt-2">{item.month}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Storage Labels */}
@@ -191,6 +172,4 @@ const Sidebar: React.FC = () => {
       </div>
     </div>
   )
-}
-
-export default Sidebar 
+} 

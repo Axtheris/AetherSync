@@ -46,7 +46,7 @@ function createWindow() {
     height,
     minWidth: 900,
     minHeight: 600,
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    icon: path.join(process.env.VITE_PUBLIC || __dirname, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
       nodeIntegration: false,
@@ -122,7 +122,7 @@ ipcMain.handle('store:set', (_, key: string, value: any) => {
   return true
 })
 
-ipcMain.handle('store:delete', (_, key: string) => {
+ipcMain.handle('store:delete', (_, key: 'autoAcceptTransfers' | 'theme' | 'downloadPath' | 'windowBounds' | 'deviceName') => {
   store.delete(key)
   return true
 })
@@ -172,7 +172,6 @@ ipcMain.handle('fs:show-in-folder', async (_, filePath: string) => {
 ipcMain.handle('fs:get-storage-info', async () => {
   try {
     const downloadPath = store.get('downloadPath') as string
-    const stats = await fs.promises.stat(downloadPath)
     
     // Get directory size (simplified - in production you'd want a more robust solution)
     const getDirectorySize = async (dirPath: string): Promise<number> => {

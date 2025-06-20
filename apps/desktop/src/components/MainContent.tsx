@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { Upload, Download, FileText, X, CheckCircle, AlertCircle } from 'lucide-react'
+import { Upload, Download, X, CheckCircle, AlertCircle } from 'lucide-react'
 
 interface TransferFile {
   id: string
