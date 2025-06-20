@@ -18,11 +18,33 @@ try {
 }
 
 // Install music-metadata for audio metadata extraction
-let musicMetadata: any
+let parseFile: any = null
 try {
-  musicMetadata = require('music-metadata')
+  const musicMetadata: any = require('music-metadata')
+  parseFile = musicMetadata.parseFile
+  console.log('music-metadata library loaded successfully:', typeof musicMetadata, typeof parseFile)
+  
+  // If parseFile is not directly available, try other methods
+  if (!parseFile) {
+    parseFile = musicMetadata.default?.parseFile
+    console.log('Trying default.parseFile:', typeof parseFile)
+  }
 } catch (error) {
-  console.warn('Music-metadata not available for audio metadata extraction')
+  console.warn('Music-metadata not available for audio metadata extraction:', error)
+}
+
+// Install ffmpeg-static for video thumbnails
+let ffmpegStatic: any
+let ffmpeg: any
+try {
+  ffmpegStatic = require('ffmpeg-static')
+  ffmpeg = require('fluent-ffmpeg')
+  if (ffmpegStatic) {
+    ffmpeg.setFfmpegPath(ffmpegStatic)
+  }
+  console.log('ffmpeg library loaded successfully')
+} catch (error) {
+  console.warn('ffmpeg not available for video thumbnail extraction:', error)
 }
 
 // The built directory structure
@@ -470,9 +492,13 @@ ipcMain.handle('fs:get-recent-files', async (_, limit: number = 20) => {
     
     // Generate thumbnails for the limited set
     for (const file of limitedFiles) {
+      console.log(`Generating thumbnail for: ${file.name}`)
       const thumbnail = await generateFileThumbnail(file.path)
       if (thumbnail) {
+        console.log(`Thumbnail generated for ${file.name}, length: ${thumbnail.length}`)
         file.thumbnail = thumbnail
+      } else {
+        console.log(`No thumbnail generated for ${file.name}`)
       }
     }
     
@@ -545,19 +571,100 @@ const generateImageThumbnail = async (filePath: string): Promise<string | null> 
 // Extract album art from audio files
 const extractAudioThumbnail = async (filePath: string): Promise<string | null> => {
   try {
-    if (musicMetadata) {
-      const metadata = await musicMetadata.parseFile(filePath)
-      const picture = metadata.common.picture?.[0]
+    console.log('Attempting to extract audio thumbnail for:', filePath)
+    
+    if (!parseFile) {
+      console.warn('music-metadata parseFile function not available')
+      return null
+    }
+    
+    console.log('parseFile function is available, parsing file...')
+    const metadata = await parseFile(filePath)
+    console.log('Metadata parsed successfully:', {
+      title: metadata.common.title,
+      artist: metadata.common.artist,
+      hasPicture: !!metadata.common.picture?.length
+    })
+    
+    const picture = metadata.common.picture?.[0]
+    
+    if (picture) {
+      console.log('Found album art:', {
+        format: picture.format,
+        dataSize: picture.data.length
+      })
       
-      if (picture) {
-        const mimeType = picture.format || 'image/jpeg'
-        return `data:${mimeType};base64,${picture.data.toString('base64')}`
-      }
+      const mimeType = picture.format || 'image/jpeg'
+      const base64Data = picture.data.toString('base64')
+      const dataUrl = `data:${mimeType};base64,${base64Data}`
+      
+      console.log('Generated thumbnail data URL for audio file')
+      return dataUrl
+    } else {
+      console.log('No album art found in audio file')
     }
   } catch (error) {
     console.error('Failed to extract audio metadata for:', filePath, error)
   }
   return null
+}
+
+// Extract thumbnail from video files
+const extractVideoThumbnail = async (filePath: string): Promise<string | null> => {
+  return new Promise((resolve) => {
+    try {
+      console.log('Attempting to extract video thumbnail for:', filePath)
+      
+      if (!ffmpeg) {
+        console.warn('ffmpeg library not available')
+        resolve(null)
+        return
+      }
+      
+      // Create a temporary file for the thumbnail
+      const tempDir = require('os').tmpdir()
+      const tempFile = path.join(tempDir, `thumb_${Date.now()}.jpg`)
+      
+      console.log('ffmpeg library is available, extracting frame...')
+      
+      ffmpeg(filePath)
+        .seekInput(1) // Seek to 1 second into video
+        .frames(1) // Extract 1 frame
+        .size('64x64')
+        .output(tempFile)
+        .on('end', async () => {
+          try {
+            console.log('Video frame extracted successfully')
+            
+            // Read the generated thumbnail
+            const thumbnailBuffer = await fs.promises.readFile(tempFile)
+            const base64Data = thumbnailBuffer.toString('base64')
+            const dataUrl = `data:image/jpeg;base64,${base64Data}`
+            
+            // Clean up temp file
+            try {
+              await fs.promises.unlink(tempFile)
+            } catch (e) {
+              console.warn('Failed to clean up temp file:', e)
+            }
+            
+            console.log('Generated thumbnail data URL for video file')
+            resolve(dataUrl)
+          } catch (error) {
+            console.error('Failed to read video thumbnail:', error)
+            resolve(null)
+          }
+        })
+        .on('error', (error: any) => {
+          console.error('Failed to extract video thumbnail:', error)
+          resolve(null)
+        })
+        .run()
+    } catch (error) {
+      console.error('Failed to process video thumbnail:', error)
+      resolve(null)
+    }
+  })
 }
 
 // Generate thumbnail for any file type
@@ -567,6 +674,11 @@ const generateFileThumbnail = async (filePath: string): Promise<string | null> =
   // Image thumbnails
   if (['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'].includes(ext)) {
     return await generateImageThumbnail(filePath)
+  }
+  
+  // Video file thumbnails
+  if (['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv', '.m4v'].includes(ext)) {
+    return await extractVideoThumbnail(filePath)
   }
   
   // Audio file album art

@@ -4,8 +4,6 @@ import toast from 'react-hot-toast'
 import { useTransferStore, type RecentFile } from '../stores/transfer-store'
 import { 
   formatFileSize, 
-  getFileIcon, 
-  getFileColor,
   generateShareLink 
 } from '../utils/file-utils'
 import { FileIcon } from './FileIcon'
