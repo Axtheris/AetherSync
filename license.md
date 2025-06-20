@@ -179,5 +179,3 @@ b.  To the extent possible, if any provision of this Public License is deemed un
 c.  No term or condition of this Public License will be waived and no failure to comply consented to unless expressly agreed to by the Licensor.
 d.  Nothing in this Public License constitutes or may be interpreted as a limitation upon, or waiver of, any privileges and immunities that apply to the Licensor or You, including from the legal processes of any jurisdiction or authority.
 ```
-
-This includes the header you provided, the human-readable summary, Section 1, and the full legal code for Sections 2-8 of the CC BY-NC 4.0 license, formatted to be consistent. You can save this entire block of text as `LICENSE` or `LICENSE.txt` in the root of your repository.
